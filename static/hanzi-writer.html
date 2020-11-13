@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>汉字书写练习</title>
+    <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@2.2/dist/hanzi-writer.min.js"></script>
+    <script type="text/javascript" src="js/duyin.js"></script>
+    <style>
+        .list-item{
+            display: inline-block;
+            width: 64px;
+            height: 64px;
+            margin: 20px;
+            cursor: pointer;
+            border: 1px dotted #cccccc;
+            font-size: 48px;
+            text-align: center;
+        }
+        .list-item-pinyin{
+            display: inline-block;
+            position: absolute;
+            margin-left: -64px;
+            margin-top: -8px;
+            text-align: center;
+            font-size: 20px;
+            color: cornflowerblue;
+        }
+
+        .button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 10px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 100px;
+            vertical-align: bottom;
+        }
+
+        .button:focus{
+            outline: none;
+        }
+
+        .grid {
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cpath stroke='%23DDD' d='M0 0l100 100M100 0L0 100M50 0v100M0 50h100'/%3E%3C/svg%3E") no-repeat;
+            background-size: 100% 100%;
+            border: 1px solid #cccccc;
+            display: inline-block;
+        }
+        .grid-100{
+            width: 102px;
+            height: 102px;
+        }
+        .grid-150 {
+            width: 152px;
+            height: 152px;
+        }
+        .label-checkbox{
+            font-size: 16px;
+            color: cornflowerblue;
+        }
+        #grid-pinyin{
+            width: 100px;
+            text-align: center;
+            margin-bottom: 12px;
+            font-size: 20px;
+            color: cornflowerblue;
+        }
+    </style>
+
+</head>
+<body>
+    <textarea name="list" id="list" cols="30" rows="10">春夏秋冬就</textarea>
+    <button class="button" id="refresh">更新</button>
+
+    <h3>点击要学习的汉字：<input type="checkbox" id="show_pinyin"><label for="show_pinyin" class="label-checkbox">显示所有拼音</label></h3>
+    <div id="list-choice">
+    </div>
+    
+
+    <h3>汉字动画</h3>
+    <div id="grid-pinyin"></div>    
+    <div class="grid grid-100" id="grid-background-target"></div>
+    <!-- <button id="animate-button">动画</button> -->
+    
+    <h3>汉字笔顺</h3>
+    <div id="target"></div>
+
+    <h3>汉字练习</h3>
+    <div class="grid grid-150" id="quiz-target"></div>
+    <button class="button" id="retry">重来</button>
+</body>
+<script>
+    var options = {
+        width: 100,
+        height: 100,
+        padding: 5,
+        radicalColor: '#337ab7', // blue
+        strokeAnimationSpeed: 2, // 5x normal speed
+        delayBetweenStrokes: 255, // milliseconds
+        delayBetweenLoops: 2000,
+    }
+
+    function renderFanningStrokes(target, strokes) {
+        var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.style.width = '75px';
+        svg.style.height = '75px';
+        svg.style.border = '1px solid #EEE'
+        svg.style.marginRight = '3px'
+        target.appendChild(svg);
+        var group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+
+        // set the transform property on the g element so the character renders at 75x75
+        var transformData = HanziWriter.getScalingTransform(75, 75);
+        group.setAttributeNS(null, 'transform', transformData.transform);
+        svg.appendChild(group);
+
+        strokes.forEach(function(strokePath) {
+            var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            path.setAttributeNS(null, 'd', strokePath);
+            // style the character paths
+            path.style.fill = '#555';
+            group.appendChild(path);
+        });
+    }
+
+
+function trans(cc){
+	var str='';
+	var s;
+	for(var i=0;i<cc.length;i++){
+	//alert(cc.charAt(i)+" = "+cc.charCodeAt(i));
+		if(pydic.indexOf(cc.charAt(i))!=-1&&cc.charCodeAt(i)>200){
+			s=1;
+			while(pydic.charAt(pydic.indexOf(cc.charAt(i))+s)!=","){
+				str+=pydic.charAt(pydic.indexOf(cc.charAt(i))+s);
+				s++;
+			}
+			str+=" ";
+		}
+		else{
+			str+=cc.charAt(i);
+		}
+	}
+	return str;
+}
+
+
+    var current_char;
+
+    function refresh_list(){
+        var list = document.getElementById('list').value.trim().split('')
+        list = list.filter(item=>{
+            return item.charCodeAt(0) > 255
+        })
+
+        // list = Array.from(new Set(list))
+
+        location.hash = encodeURI(list.join(''))
+
+        var first = list[0]
+        var list_content = '';
+        list.forEach(function(char,idx){
+            list_content += '<div id="list-item-'+ idx +'" class="list-item">'+char+'</div>'
+            list_content += '<div class="list-item-pinyin">'+trans(char)+'</div>'
+        })
+
+        document.getElementById('list-choice').innerHTML = list_content;
+        if(document.getElementById('show_pinyin').checked) {
+            show_hide('.list-item-pinyin', true)
+        }else {
+            show_hide('.list-item-pinyin', false)
+        }
+        document.querySelectorAll('.list-item').forEach(function(ele,idx){
+            ele.addEventListener('click', function() {
+                renderChar(this.innerText)
+            });
+        })
+        
+ 
+        renderChar(first)
+    }
+
+
+    document.getElementById('refresh').addEventListener('click', function() {
+        refresh_list()
+    });
+
+
+    function show_hide(sel,show){
+        var o = document.querySelectorAll(sel);
+        for (let i = 0; i < o.length; i++) {
+            o[i].style.display = (show?'':'none')
+        }
+    }
+
+    document.getElementById('show_pinyin').addEventListener('change', function() {
+        show_hide('.list-item-pinyin', this.checked)
+    });
+
+
+    function renderChar(char){
+        if(current_char == char) return;
+        current_char = char;
+        document.getElementById('grid-pinyin').innerHTML = trans(char)
+        document.getElementById('grid-background-target').innerHTML = ''
+        document.getElementById('target').innerHTML = ''
+        document.getElementById('quiz-target').innerHTML = ''
+        var writer = HanziWriter.create('grid-background-target', char, options);
+        writer.loopCharacterAnimation()
+        HanziWriter.loadCharacterData(char).then(function(charData) {
+            var target = document.getElementById('target');
+            for (var i = 0; i < charData.strokes.length; i++) {
+                var strokesPortion = charData.strokes.slice(0, i + 1);
+                renderFanningStrokes(target, strokesPortion);
+            }
+        });
+
+        var writer_quiz = HanziWriter.create('quiz-target', char, {
+            width: 150,
+            height: 150,
+            showCharacter: false,
+            padding: 5
+        });
+        writer_quiz.quiz();
+
+        document.getElementById('retry').addEventListener('click', function() {
+            writer_quiz.quiz();
+        });
+    }
+
+
+
+
+
+    function onload(){
+        var p = location.hash
+        if(p) {
+            document.getElementById('list').value =  decodeURI(p.substr(1))
+        }
+        refresh_list();
+    }
+
+    onload()
+
+    
+
+    // document.getElementById('animate-button').addEventListener('click', function() {
+    //     writer.loopCharacterAnimation()
+    // });
+
+
+    
+
+
+
+</script>
+</html>

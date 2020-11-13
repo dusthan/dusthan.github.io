@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="js/html2canvas.min.js"></script>
+    <script type="text/javascript" src="js/xlsx.core.min.js"></script>
+</head>
+<body>
+    
+<button onclick="download('png')">PNG</button> <button onclick="download('jpg')">JPG</button>
+    
+<div class="vditor-reset" id="preview">
+<p>Hello world!</p>
+</div>
+
+
+<button onclick="exportTxt()">txt</button>
+
+<textarea name="txt" id="txt" cols="30" rows="10">
+    Hello world!
+    HaHa!
+    Just do it!
+    汉字呢？
+</textarea>
+
+
+
+<div>
+    <button onclick="downloadExcel()">Excel</button>
+
+    <button onclick="downloadCSV()">CSV</button>
+
+    <!-- `id,number,string,smile
+    11,111,ssd,嘿嘿
+    22,222,kk,哈哈
+    33,333,sf,呵呵` -->
+
+    <table id="tbl" style="border: 1px solid #eeeeee;border-collapse: separate;">
+        <thead><tr><th>id</th><th>number</th><th>string</th><th>smile</th></tr></head>
+        <tbody>
+            <tr><td>1</td><td>111</td><td>ssd</td><td>嘿嘿</td></tr>
+            <tr><td>2</td><td>
+                112    2222
+                3333
+                444
+            </td><td>快快快</td><td>哈哈</td></tr>
+            <tr><td>3</td><td>"113</td><td>ssf</td><td>呵呵</td></tr>
+        </tbody>
+    </table>
+</div>
+
+
+
+<script>
+    
+    function saveAsPNG(canvas) {
+        return canvas.toDataURL("image/png");
+    }
+
+    function saveAsJPG(canvas) {
+        return canvas.toDataURL("image/jpeg");
+    }
+
+    function downLoadURL(filename,url){
+        var oA = document.createElement('a');
+        oA.style.display='none'
+        oA.download = filename;// 设置下载的文件名，默认是'下载'
+        oA.href = url;
+        document.body.appendChild(oA);
+        oA.click();
+        oA.remove(); // 下载之后把创建的元素删除
+    }
+
+    function download(type){
+        html2canvas(document.querySelector("#preview")).then(canvas => {
+            if(type=='png'){
+                downLoadURL('png',saveAsPNG(canvas));
+            }
+            else {
+                downLoadURL('jpg',saveAsJPG(canvas));
+            }
+
+        });
+    }
+
+    function exportTxt(){
+        var content = document.querySelector("#txt").value;
+        // var eleLink = document.createElement('a');
+        // eleLink.download = 'txt';
+        // eleLink.style.display = 'none'; // 字符内容转变成blob地址
+        var blob = new Blob([content],{type: "text/plain;charset=utf-8"});
+        // eleLink.href = URL.createObjectURL(blob); // 触发点击
+
+        downLoadURL('txt',URL.createObjectURL(blob))
+        // document.body.appendChild(eleLink);
+        // eleLink.click(); // 然后移除
+        // document.body.removeChild(eleLink)
+    }
+
+
+// csv转sheet对象
+function csv2sheet(csv) {
+	var sheet = {}; // 将要生成的sheet
+	csv = csv.split('\n');
+	csv.forEach(function(row, i) {
+		row = row.split(',');
+		if(i == 0) sheet['!ref'] = 'A1:'+String.fromCharCode(65+row.length-1)+(csv.length);
+		row.forEach(function(col, j) {
+			sheet[String.fromCharCode(65+j)+(i+1)] = {v: col.substr(1,col.length-2)};
+		});
+	});
+	return sheet;
+}
+
+// 将一个sheet转成最终的excel文件的blob对象，然后利用URL.createObjectURL下载
+function sheet2blob(sheet, sheetName) {
+	sheetName = sheetName || 'sheet1';
+	var workbook = {
+		SheetNames: [sheetName],
+		Sheets: {}
+	};
+	workbook.Sheets[sheetName] = sheet;
+	// 生成excel的配置项
+	var wopts = {
+		bookType: 'xlsx', // 要生成的文件类型
+		bookSST: false, // 是否生成Shared String Table，官方解释是，如果开启生成速度会下降，但在低版本IOS设备上有更好的兼容性
+		type: 'binary'
+	};
+	var wbout = XLSX.write(workbook, wopts);
+	var blob = new Blob([s2ab(wbout)], {type:"application/octet-stream"});
+	// 字符串转ArrayBuffer
+	function s2ab(s) {
+		var buf = new ArrayBuffer(s.length);
+		var view = new Uint8Array(buf);
+		for (var i=0; i!=s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+		return buf;
+	}
+	return blob;
+}
+
+function openDownloadDialog(url, saveName)
+{
+	if(typeof url == 'object' && url instanceof Blob)
+	{
+		url = URL.createObjectURL(url); // 创建blob地址
+	}
+	var aLink = document.createElement('a');
+	aLink.href = url;
+	aLink.download = saveName || ''; // HTML5新增的属性，指定保存文件名，可以不要后缀，注意，file:///模式下不会生效
+	var event;
+	if(window.MouseEvent) event = new MouseEvent('click');
+	else
+	{
+		event = document.createEvent('MouseEvents');
+		event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+	}
+	aLink.dispatchEvent(event);
+}
+
+
+
+
+function exportExcel(csv) {
+    var sheet = csv2sheet(csv);
+    var blob = sheet2blob(sheet);
+    openDownloadDialog(blob, '导出.xlsx');
+}
+
+function table2csv(table_id, separator = ','){
+    var rows = document.querySelectorAll("table#"+table_id+" tr")
+    var csv=[]
+    for(var i = 0; i< rows.length;i++) {
+        var row = [], cols = rows[i].querySelectorAll('td, th');
+        for (var j = 0; j < cols.length; j++) {
+            // Clean innertext to remove multiple spaces and jumpline (break csv)
+            var data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s)/gm, ' ')
+            // Escape double-quote with double-double-quote (see https://stackoverflow.com/questions/17808511/properly-escape-a-double-quote-in-csv)
+            data = data.replace(/"/g, '""');
+            // Push escaped string
+            row.push('"' + data + '"');
+
+            // row.push(data);
+        }
+        csv.push(row.join(separator));
+    }
+    var csv_string = csv.join('\n');
+    return csv_string
+}
+
+
+function downloadExcel() {
+    var csv = table2csv('tbl')
+    exportExcel(csv);
+}
+
+function downloadCSV() {
+    var str = table2csv('tbl')
+    str =  encodeURIComponent(str);
+    var url = "data:text/csv;charset=utf-8,\ufeff"+str;
+    openDownloadDialog(url,"exportCSV");
+}
+
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS3-Counter</title>
+    <style>
+        dl{
+            counter-reset: list1;
+        }
+        dt{
+            counter-increment: list1;
+            counter-reset: list2;
+            font-size: 14px;
+        }
+
+        dt::before {
+            content: counter(list1)". ";
+            font-style: italic;
+            color: gray;
+            font-style: 16px;
+        }
+
+        dd{
+            counter-increment: list2;
+            font-size: 14px;
+        }
+        dd::before{
+            content: counter(list1)"."counter(list2)". ";
+            font-style: italic;
+            color: gray;
+            font-style: 14px;
+        }
+
+
+
+    </style>
+</head>
+<body>
+    <dl>
+        <dt>Fruit</dt>
+        <dd>apple</dd>
+        <dd>pear</dd>
+        <dd>banana</dd>
+
+        <dt>Animal</dt>
+        <dd>dog</dd>
+        <dd>cat</dd>
+        <dd>sheep</dd>
+        <dd>cow</dd>
+    </dl>
+</body>
+</html>

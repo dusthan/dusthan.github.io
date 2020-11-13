@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="Zh-Cn">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon16.ico?v=5.1.4">
+
+
+
+
+
+
+  <meta name="keywords" content="shortcut,vi,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="VI 使用技巧快捷键多文件替换 把需要进行操作的文件进行标记   :args ./**/*.py   **/ 表示遍历子目录，以上命令表示 当前目录及子目录下所有的python文件  将所有标记过的文件执行动作   :argdo %s/print/Print/g | update   多文件查找在当前打开文件中查找  :vimgrep /pattern/ % 在当前目录下查找所有  :vimgre">
+<meta name="keywords" content="shortcut,vi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="VI使用技巧">
+<meta property="og:url" content="http://dusthan.github.com/2020/05/13/VI使用技巧/index.html">
+<meta property="og:site_name" content="Dusthan&#39;s blog!">
+<meta property="og:description" content="VI 使用技巧快捷键多文件替换 把需要进行操作的文件进行标记   :args ./**/*.py   **/ 表示遍历子目录，以上命令表示 当前目录及子目录下所有的python文件  将所有标记过的文件执行动作   :argdo %s/print/Print/g | update   多文件查找在当前打开文件中查找  :vimgrep /pattern/ % 在当前目录下查找所有  :vimgre">
+<meta property="og:locale" content="Zh-Cn">
+<meta property="og:updated_time" content="2020-11-13T08:37:45.390Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="VI使用技巧">
+<meta name="twitter:description" content="VI 使用技巧快捷键多文件替换 把需要进行操作的文件进行标记   :args ./**/*.py   **/ 表示遍历子目录，以上命令表示 当前目录及子目录下所有的python文件  将所有标记过的文件执行动作   :argdo %s/print/Print/g | update   多文件查找在当前打开文件中查找  :vimgrep /pattern/ % 在当前目录下查找所有  :vimgre">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://dusthan.github.com/2020/05/13/VI使用技巧/">
+
+
+
+
+
+  <title>VI使用技巧 | Dusthan's blog!</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="Zh-Cn">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Dusthan's blog!</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Remain true to our original aspiration</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://dusthan.github.com/2020/05/13/VI使用技巧/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="DustHan">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dusthan's blog!">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">VI使用技巧</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-05-13T03:41:48+00:00">
+                2020-05-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1><span id="vi-使用技巧">VI 使用技巧</span></h1><h2><span id="快捷键">快捷键</span></h2><h3><span id="多文件替换">多文件替换</span></h3><ul>
+<li><p>把需要进行操作的文件进行标记</p>
+<p>  <code>:args ./**/*.py</code></p>
+<p>  **/ 表示遍历子目录，以上命令表示 当前目录及子目录下所有的python文件</p>
+</li>
+<li><p>将所有标记过的文件执行动作</p>
+<p>  <code>:argdo %s/print/Print/g | update</code></p>
+</li>
+</ul>
+<h3><span id="多文件查找">多文件查找</span></h3><p>在当前打开文件中查找  <code>:vimgrep /pattern/ %</code></p>
+<p>在当前目录下查找所有  <code>:vimgrep /pattern/ *</code></p>
+<p>在当前目录及子目录下查找所有  <code>:vimgrep /pattern/ **</code></p>
+<p>查找当前目录下所有.c文件  <code>:vimgrep /pattern/ *.c</code></p>
+<p>只查找子目录 <code>:vimgrep /pattern/ */**</code></p>
+<p>移动到当前位置的后10个  <code>:cn10</code></p>
+<p>移动到当前位置的前20个 <code>:cp20</code></p>
+<p>定位到第一个 <code>:cfirst</code></p>
+<p>定位到最后一个  <code>:clast</code></p>
+<p>打开Quickfix <code>:cw/copen</code></p>
+<p>关闭quickfix <code>:ccl/cclose</code></p>
+<h3><span id="lvimgrep-与-vimgrep-的区别">lvim[grep] 与 vim[grep] 的区别</span></h3><ul>
+<li>lvim 使用窗口的本地列表，vim 使用 quickfix 列表。</li>
+<li>lvim 的窗口本地列表跳转命令为：:<code>lnext 、 :lprev 、 :lfirst 及 :llast</code> </li>
+</ul>
+<h3><span id="vim-光标移动">VIM 光标移动</span></h3><h4><span id="字符移动">字符移动</span></h4><ul>
+<li><code>h</code></li>
+<li><code>j</code></li>
+<li><code>k</code></li>
+<li><code>l</code></li>
+<li><code>i</code></li>
+</ul>
+<h4><span id="单词移动">单词移动</span></h4><ul>
+<li><code>w</code></li>
+<li><code>b</code></li>
+<li><code>e</code></li>
+<li><code>W</code></li>
+<li><code>B</code></li>
+<li><code>E</code></li>
+<li><code>$</code></li>
+<li><code>^</code></li>
+</ul>
+<pre><code>4w 向后移动4个单词
+^y$ 拷贝一行
+yy 拷贝一行
+p paste
+</code></pre><h4><span id="相对屏幕移动">相对屏幕移动</span></h4><ul>
+<li><code>C+f</code> 向下翻页</li>
+<li><code>C+b</code> 向上翻页</li>
+<li><code>C+e</code> 逐行下滚</li>
+<li><code>C+y</code> 逐行上滚</li>
+<li><code>H</code>   光标移到屏幕首行</li>
+<li><code>L</code>   光标移到屏幕尾行</li>
+<li><code>M</code>   光标移到屏幕中间行</li>
+<li><code>zt</code>  置顶当前行，滚动使当前光标位置位于屏幕首行</li>
+<li><code>zz</code>  滚动使当前光标位置位于屏幕中间行</li>
+<li><code>zb</code>  滚动使当前光标位置位于屏幕尾行</li>
+</ul>
+<h4><span id="文件中移动">文件中移动</span></h4><ul>
+<li><code>:set number</code> 显示行号</li>
+<li><code>:10</code> 移动光标到第10行</li>
+<li><code>gg</code> 移动光标到文件头</li>
+<li><code>G</code> 移动光标到文件尾</li>
+<li><code>ggyG</code> 拷贝整个文件</li>
+<li><code>gg&quot;*yG</code> 拷贝整个文件到系统剪贴板</li>
+</ul>
+<h3><span id="vim-寄存器">VIM 寄存器</span></h3><h4><span id="无名寄存器">无名寄存器（””）</span></h4><pre><code>倘若我们没有指定使用寄存器， Vim 将缺省使用无名寄存器，它可以双引号表示。
+
+例如 &quot;&quot;p 这个命令，他完全等同于 p 命令。
+</code></pre><h4><span id="数字寄存器">数字寄存器</span></h4><h4><span id="行内删除small-delete寄存器">行内删除（small delete）寄存器</span></h4><pre><code>&quot;-，缓存行内删除内容
+</code></pre><h4><span id="具名named寄存器">具名（named）寄存器</span></h4><pre><code>&quot;a - &quot;z或&quot;A - &quot;Z，指定时可用；
+</code></pre><h4><span id="只读read-only寄存器">只读（read-only）寄存器</span></h4><pre><code>&quot;:, &quot;., &quot;%, &quot;#，分别缓存最近命令、最近插入文本、当前文件名、当前交替文件名；
+</code></pre><h4><span id="表达式expression寄存器">表达式（expression）寄存器</span></h4><pre><code>&quot;=，只读，用于执行表达式命令；
+</code></pre><h4><span id="选择及拖拽selection-and-drop寄存器">选择及拖拽（selection and drop）寄存器</span></h4><pre><code>&quot;*, &quot;+, &quot;~，存取GUI选择文本，可用于与外部应用交互，使用前提为系统剪切板（clipboard）可用；
+</code></pre><h4><span id="黑洞black-hole寄存器">黑洞（black hole）寄存器</span></h4><pre><code>&quot;_，不缓存操作内容（干净删除）
+</code></pre><h4><span id="模式寄存器last-search-pattern">模式寄存器（last search pattern）</span></h4><pre><code>&quot;/，缓存最近的搜索模式
+</code></pre><p><strong>举例：</strong></p>
+<blockquote>
+<p><code>&quot;byy</code> 将当前行复制到b寄存器<br><code>&quot;bp</code> 粘贴b寄存器的内容<br><code>gh</code> 进入select mode, 选择要复制的内容，<code>Ctrl+o</code>进入Visual mode, <code>&quot;+y</code> 复制到系统剪贴板</p>
+</blockquote>
+<h3><span id="vim多文件">VIM多文件</span></h3><h4><span id="打开与关闭">打开与关闭</span></h4><p><code>vim -p test01.py test02.py sub/sub_test01.py</code></p>
+<pre><code>:tabe[dit] {file}   edit specified file in a new tab
+:tabf[ind] {file}   open a new tab with filename given, searching the &apos;path&apos; to find it
+:tabc[lose]         close current tab
+:tabc[lose] {i}     close i-th tab
+:tabo[nly]          close all other tabs (show only the current tab)
+</code></pre><h4><span id="移动标签">移动标签</span></h4><pre><code>:tabs         list all tabs including their displayed window
+:tabm 0       move current tab to first
+:tabm         move current tab to last
+:tabm {i}     move current tab to position i+1
+</code></pre><h4><span id="标签跳转">标签跳转</span></h4><pre><code>:tabn         go to next tab
+:tabp         go to previous tab
+:tabfirst     go to first tab
+:tablast      go to last tab
+</code></pre><p>在正常模式下，还可以使用以下快捷键：</p>
+<pre><code>gt            go to next tab
+gT            go to previous tab
+{i}gt         go to tab in position i 
+</code></pre><p>可以设置更通用的切换标签页快捷键，比如</p>
+<pre><code>noremap &lt;C-L&gt; &lt;Esc&gt;:tabnext&lt;CR&gt;
+noremap &lt;C-H&gt; &lt;Esc&gt;:tabprevious&lt;CR&gt;
+</code></pre><p><a href="https://harttle.land/2015/11/12/vim-tabpage.html" title="轩辕之风" target="_blank" rel="noopener">参考 Harttle</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/shortcut/" rel="tag"># shortcut</a>
+          
+            <a href="/tags/vi/" rel="tag"># vi</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/05/02/Docker部署mysql/" rel="next" title="Docker部署mysql">
+                <i class="fa fa-chevron-left"></i> Docker部署mysql
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/06/09/mysql开窗函数over/" rel="prev" title="mysql开窗函数over">
+                mysql开窗函数over <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">DustHan</p>
+              <p class="site-description motion-element" itemprop="description">A space for life/technology</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/yourname" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:yourname@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://plus.google.com/yourname" target="_blank" title="Google">
+                      
+                        <i class="fa fa-fw fa-google"></i>Google</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/yourname" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.facebook.com/yourname" target="_blank" title="FB Page">
+                      
+                        <i class="fa fa-fw fa-facebook"></i>FB Page</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="http://weibo.com/your-user-name" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-globe"></i>微博</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-number">1.</span> <span class="nav-text">VI 使用技巧</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#null"><span class="nav-number">1.1.</span> <span class="nav-text">快捷键</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#null"><span class="nav-number">1.1.1.</span> <span class="nav-text">多文件替换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#null"><span class="nav-number">1.1.2.</span> <span class="nav-text">多文件查找</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#null"><span class="nav-number">1.1.3.</span> <span class="nav-text">lvim[grep] 与 vim[grep] 的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#null"><span class="nav-number">1.1.4.</span> <span class="nav-text">VIM 光标移动</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#null"><span class="nav-number">1.1.4.1.</span> <span class="nav-text">字符移动</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#null"><span class="nav-number">1.1.4.2.</span> <span class="nav-text">单词移动</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#null"><span class="nav-number">1.1.4.3.</span> <span class="nav-text">相对屏幕移动</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#null"><span class="nav-number">1.1.4.4.</span> <span class="nav-text">文件中移动</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#null"><span class="nav-number">1.1.5.</span> <span class="nav-text">VIM 寄存器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#null"><span class="nav-number">1.1.5.1.</span> <span class="nav-text">无名寄存器（””）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#null"><span class="nav-number">1.1.5.2.</span> <span class="nav-text">数字寄存器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#null"><span class="nav-number">1.1.5.3.</span> <span class="nav-text">行内删除（small delete）寄存器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#null"><span class="nav-number">1.1.5.4.</span> <span class="nav-text">具名（named）寄存器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#null"><span class="nav-number">1.1.5.5.</span> <span class="nav-text">只读（read-only）寄存器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#null"><span class="nav-number">1.1.5.6.</span> <span class="nav-text">表达式（expression）寄存器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#null"><span class="nav-number">1.1.5.7.</span> <span class="nav-text">选择及拖拽（selection and drop）寄存器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#null"><span class="nav-number">1.1.5.8.</span> <span class="nav-text">黑洞（black hole）寄存器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#null"><span class="nav-number">1.1.5.9.</span> <span class="nav-text">模式寄存器（last search pattern）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#null"><span class="nav-number">1.1.6.</span> <span class="nav-text">VIM多文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#null"><span class="nav-number">1.1.6.1.</span> <span class="nav-text">打开与关闭</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#null"><span class="nav-number">1.1.6.2.</span> <span class="nav-text">移动标签</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#null"><span class="nav-number">1.1.6.3.</span> <span class="nav-text">标签跳转</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2015 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DustHan</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
