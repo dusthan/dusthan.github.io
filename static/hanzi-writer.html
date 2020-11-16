@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>汉字书写练习</title>
     <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@2.2/dist/hanzi-writer.min.js"></script>
+    <script src="https://richtr.github.io/NoSleep.js/dist/NoSleep.min.js"></script>
     <script type="text/javascript" src="js/duyin.js"></script>
     <style>
         .list-item{
@@ -242,6 +243,8 @@ function trans(cc){
             document.getElementById('list').value =  decodeURI(p.substr(1))
         }
         refresh_list();
+	var noSleep = new NoSleep();
+        noSleep.enable();
     }
 
     onload()
