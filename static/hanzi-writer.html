@@ -15,8 +15,12 @@
             margin: 20px;
             cursor: pointer;
             border: 1px dotted #cccccc;
-            font-size: 48px;
+            font-size: 60px;
             text-align: center;
+            font-family: 'STKaiti','KaiTi','KaiTi_GB2312';
+        }
+        .active{
+            color: #4CAF50;
         }
         .list-item-pinyin{
             display: inline-block;
@@ -70,6 +74,12 @@
             font-size: 20px;
             color: cornflowerblue;
         }
+
+        #list-choice{
+            -webkit-user-select: none;
+            -moz-user-select: none;
+        }
+
     </style>
 
 </head>
@@ -177,6 +187,9 @@ function trans(cc){
         }
         document.querySelectorAll('.list-item').forEach(function(ele,idx){
             ele.addEventListener('click', function() {
+                const active = document.querySelector('.list-item.active')
+                if(active) active.classList.remove('active')
+                this.classList.add('active')
                 renderChar(this.innerText)
             });
         })
@@ -243,7 +256,7 @@ function trans(cc){
             document.getElementById('list').value =  decodeURI(p.substr(1))
         }
         refresh_list();
-	var noSleep = new NoSleep();
+        var noSleep = new NoSleep();
         noSleep.enable();
     }
 
