@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="">
+<head>
+    <meta charset="utf-8">
+    <title>田字格米字格在线字帖生成器 - 灵犀汉语</title>
+    <meta name="keywords" content="田字格字帖,米字格字帖,在线字体打印,笔顺字帖,儿童田字格打印,硬笔书法字帖">
+    <meta name="description" content="本网站支持在线生成各种实用字帖，自定义字帖文字，字体，颜色等">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=0">
+    <meta name="theme-color" content="#fff">
+    <link rel="shortcut icon" type="image/x-icon" href="/dist/favicon.ico"/>
+    <script type="text/javascript" src="js/duyin.js"></script>
+    <!-- <script type="text/javascript" src="https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.1.js"></script> -->
+    <style>
+    /*! normalize.css v5.0.0 | MIT License | github.com/necolas/normalize.css */
+
+    /**
+     * 1. Change the default font family in all browsers (opinionated).
+     * 2. Correct the line height in all browsers.
+     * 3. Prevent adjustments of font size after orientation changes in
+     *    IE on Windows Phone and in iOS.
+     */
+
+    /* Document
+       ========================================================================== */
+    html {
+        font-family: sans-serif;
+        /* 1 */
+        line-height: 1.15;
+        /* 2 */
+        -ms-text-size-adjust: 100%;
+        /* 3 */
+        -webkit-text-size-adjust: 100%;
+        /* 3 */
+    }/* Sections
+       ========================================================================== */
+
+    /**
+     * Remove the margin in all browsers (opinionated).
+     */
+    body {
+        margin: 0;
+    }/**
+     * Add the correct display in IE 9-.
+     */
+    article, aside, footer, header, nav, section {
+        display: block;
+    }/**
+     * Correct the font size and margin on `h1` elements within `section` and
+     * `article` contexts in Chrome, Firefox, and Safari.
+     */
+    h1 {
+        font-size: 2em;
+        margin: 0.67em 0;
+    }/* Grouping content
+       ========================================================================== */
+
+    /**
+     * Add the correct display in IE 9-.
+     * 1. Add the correct display in IE.
+     */
+    figcaption, figure, main {
+        /* 1 */
+        display: block;
+    }/**
+     * Add the correct margin in IE 8.
+     */
+    figure {
+        margin: 1em 40px;
+    }/**
+     * 1. Add the correct box sizing in Firefox.
+     * 2. Show the overflow in Edge and IE.
+     */
+    hr {
+        box-sizing: content-box;
+        /* 1 */
+        height: 0;
+        /* 1 */
+        overflow: visible;
+        /* 2 */
+    }/**
+     * 1. Correct the inheritance and scaling of font size in all browsers.
+     * 2. Correct the odd `em` font sizing in all browsers.
+     */
+    pre {
+        font-family: monospace, monospace;
+        /* 1 */
+        font-size: 1em;
+        /* 2 */
+    }/* Text-level semantics
+       ========================================================================== */
+
+    /**
+     * 1. Remove the gray background on active links in IE 10.
+     * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.
+     */
+    a {
+        background-color: transparent;
+        /* 1 */
+        -webkit-text-decoration-skip: objects;
+        /* 2 */
+    }/**
+     * Remove the outline on focused links when they are also active or hovered
+     * in all browsers (opinionated).
+     */
+    a:active, a:hover {
+        outline-width: 0;
+    }/**
+     * 1. Remove the bottom border in Firefox 39-.
+     * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.
+     */
+    abbr[title] {
+        border-bottom: none;
+        /* 1 */
+        text-decoration: underline;
+        /* 2 */
+        text-decoration: underline dotted;
+        /* 2 */
+    }/**
+     * Prevent the duplicate application of `bolder` by the next rule in Safari 6.
+     */
+    b, strong {
+        font-weight: inherit;
+    }/**
+     * Add the correct font weight in Chrome, Edge, and Safari.
+     */
+    b, strong {
+        font-weight: bolder;
+    }/**
+     * 1. Correct the inheritance and scaling of font size in all browsers.
+     * 2. Correct the odd `em` font sizing in all browsers.
+     */
+    code, kbd, samp {
+        font-family: monospace, monospace;
+        /* 1 */
+        font-size: 1em;
+        /* 2 */
+    }/**
+     * Add the correct font style in Android 4.3-.
+     */
+    dfn {
+        font-style: italic;
+    }/**
+     * Add the correct background and color in IE 9-.
+     */
+    mark {
+        background-color: #ff0;
+        color: #000;
+    }/**
+     * Add the correct font size in all browsers.
+     */
+    small {
+        font-size: 80%;
+    }/**
+     * Prevent `sub` and `sup` elements from affecting the line height in
+     * all browsers.
+     */
+    sub, sup {
+        font-size: 75%;
+        line-height: 0;
+        position: relative;
+        vertical-align: baseline;
+    }
+
+    sub {
+        bottom: -0.25em;
+    }
+
+    sup {
+        top: -0.5em;
+    }/* Embedded content
+       ========================================================================== */
+
+    /**
+     * Add the correct display in IE 9-.
+     */
+    audio, video {
+        display: inline-block;
+    }/**
+     * Add the correct display in iOS 4-7.
+     */
+    audio:not([controls]) {
+        display: none;
+        height: 0;
+    }/**
+     * Remove the border on images inside links in IE 10-.
+     */
+    img {
+        border-style: none;
+    }/**
+     * Hide the overflow in IE.
+     */
+    svg:not(:root) {
+        overflow: hidden;
+    }/* Forms
+       ========================================================================== */
+
+    /**
+     * 1. Change the font styles in all browsers (opinionated).
+     * 2. Remove the margin in Firefox and Safari.
+     */
+    button, input, optgroup, select, textarea {
+        font-family: sans-serif;
+        /* 1 */
+        font-size: 100%;
+        /* 1 */
+        line-height: 1.15;
+        /* 1 */
+        margin: 0;
+        /* 2 */
+    }/**
+     * Show the overflow in IE.
+     * 1. Show the overflow in Edge.
+     */
+    button, input {
+        /* 1 */
+        overflow: visible;
+    }/**
+     * Remove the inheritance of text transform in Edge, Firefox, and IE.
+     * 1. Remove the inheritance of text transform in Firefox.
+     */
+    button, select {
+        /* 1 */
+        text-transform: none;
+    }/**
+     * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`
+     *    controls in Android 4.
+     * 2. Correct the inability to style clickable types in iOS and Safari.
+     */
+    button, html [type="button"], /* 1 */
+    [type="reset"], [type="submit"] {
+        -webkit-appearance: button;
+        /* 2 */
+    }/**
+     * Remove the inner border and padding in Firefox.
+     */
+    button::-moz-focus-inner, [type="button"]::-moz-focus-inner, [type="reset"]::-moz-focus-inner, [type="submit"]::-moz-focus-inner {
+        border-style: none;
+        padding: 0;
+    }/**
+     * Restore the focus styles unset by the previous rule.
+     */
+    button:-moz-focusring, [type="button"]:-moz-focusring, [type="reset"]:-moz-focusring, [type="submit"]:-moz-focusring {
+        outline: 1px dotted ButtonText;
+    }/**
+     * Change the border, margin, and padding in all browsers (opinionated).
+     */
+    fieldset {
+        border: 1px solid #c0c0c0;
+        margin: 0 2px;
+        padding: 0.35em 0.625em 0.75em;
+    }/**
+     * 1. Correct the text wrapping in Edge and IE.
+     * 2. Correct the color inheritance from `fieldset` elements in IE.
+     * 3. Remove the padding so developers are not caught out when they zero out
+     *    `fieldset` elements in all browsers.
+     */
+    legend {
+        box-sizing: border-box;
+        /* 1 */
+        color: inherit;
+        /* 2 */
+        display: table;
+        /* 1 */
+        max-width: 100%;
+        /* 1 */
+        padding: 0;
+        /* 3 */
+        white-space: normal;
+        /* 1 */
+    }/**
+     * 1. Add the correct display in IE 9-.
+     * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.
+     */
+    progress {
+        display: inline-block;
+        /* 1 */
+        vertical-align: baseline;
+        /* 2 */
+    }/**
+     * Remove the default vertical scrollbar in IE.
+     */
+    textarea {
+        overflow: auto;
+    }/**
+     * 1. Add the correct box sizing in IE 10-.
+     * 2. Remove the padding in IE 10-.
+     */
+    [type="checkbox"], [type="radio"] {
+        box-sizing: border-box;
+        /* 1 */
+        padding: 0;
+        /* 2 */
+    }/**
+     * Correct the cursor style of increment and decrement buttons in Chrome.
+     */
+    [type="number"]::-webkit-inner-spin-button, [type="number"]::-webkit-outer-spin-button {
+        height: auto;
+    }/**
+     * 1. Correct the odd appearance in Chrome and Safari.
+     * 2. Correct the outline style in Safari.
+     */
+    [type="search"] {
+        -webkit-appearance: textfield;
+        /* 1 */
+        outline-offset: -2px;
+        /* 2 */
+    }/**
+     * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.
+     */
+    [type="search"]::-webkit-search-cancel-button, [type="search"]::-webkit-search-decoration {
+        -webkit-appearance: none;
+    }/**
+     * 1. Correct the inability to style clickable types in iOS and Safari.
+     * 2. Change font properties to `inherit` in Safari.
+     */
+    ::-webkit-file-upload-button {
+        -webkit-appearance: button;
+        /* 1 */
+        font: inherit;
+        /* 2 */
+    }/* Interactive
+       ========================================================================== */
+
+    /*
+     * Add the correct display in IE 9-.
+     * 1. Add the correct display in Edge, IE, and Firefox.
+     */
+    details, /* 1 */
+    menu {
+        display: block;
+    }/*
+     * Add the correct display in all browsers.
+     */
+    summary {
+        display: list-item;
+    }/* Scripting
+       ========================================================================== */
+
+    /**
+     * Add the correct display in IE 9-.
+     */
+    canvas {
+        display: inline-block;
+    }/**
+     * Add the correct display in IE.
+     */
+    template {
+        display: none;
+    }/* Hidden
+       ========================================================================== */
+
+    /**
+     * Add the correct display in IE 10-.
+     */
+    [hidden] {
+        display: none;
+    }
+
+    * {
+        -webkit-tap-highlight-color:rgba(0, 0, 0, 0)
+    }
+
+    @font-face {
+        font-family: DINOT;
+        src:url(https://dictcdn.youlingxi.cn/dist/font/DINOT-Regular.otf?4afbf8daaf912dae0b9a20e1fc1af809), url(https://dictcdn.youlingxi.cn/dist/font/DINOT-Regular.ttf?3117fb8bc58475ec7dcf97fc721e5034)
+    }
+
+    input, textarea, button {
+        outline:none
+    }
+
+    input {
+        line-height: normal;
+        font-family: DINOT, "PingFang SC Regular", Helvetica, "Droid Sans", Arial, sans-serif
+    }
+
+    select, button {
+        -webkit-appearance:none
+    }
+
+    html, body {
+        background:#EDEDED
+    }
+
+    html {
+        line-height: 1.15;
+        font-family: "PingFang SC Regular", Helvetica, "Droid Sans", Arial, sans-serif
+    }
+
+    body {
+        font-size: 15px;
+        color:#17191F
+    }
+
+    body h1, body h2, body h3, body h4 {
+        font-size: 15px;
+        color:#17191F
+    }
+
+    body, ul, ol, li, p, h1, h2, h3, h4, h5, h6, p, input {
+        margin: 0;
+        padding:0
+    }
+
+    input {
+        border:1px solid #f6f6f6
+    }
+
+    button {
+        border:1px solid #f6f6f6
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        font-weight:400
+    }
+
+    ul, ol {
+        list-style:none
+    }
+
+    ::-webkit-input-placeholder {
+        color:#656565
+    }
+
+    a {
+        text-decoration:none
+    }
+
+    @media screen and (max-width: 1000px) {
+        body {
+            font-size: 14px
+        }
+    }
+
+    .homePage {
+        background:#000
+    }
+
+    .homePage body {
+        background:#000
+    }
+
+    .flex {
+        display: flex;
+        flex-direction:row
+    }
+
+    .flexWrap {
+        flex-wrap:wrap
+    }
+
+    .flexColumn {
+        display: flex;
+        flex-direction:column
+    }
+
+    .FJustifyCenter {
+        justify-content:center
+    }
+
+    .FJustifyBetween {
+        justify-content:space-between
+    }
+
+    .FJustifyStart {
+        justify-content:flex-start
+    }
+
+    .FJustifyEnd {
+        justify-content:flex-end
+    }
+
+    .FAlignCenter {
+        align-items:center
+    }
+
+    .FAlignStretch {
+        align-items:stretch
+    }
+
+    .FAlignStart {
+        align-items:flex-start
+    }
+
+    .FGrow {
+        flex-grow:1
+    }
+
+    .FShrink {
+        flex-shrink:1
+    }
+
+    .FFlex {
+        flex-grow:1
+    }
+
+    .flexAuto {
+        flex:1 1 auto
+    }
+
+    .flexNone {
+        flex:none
+    }
+
+    .f12 {
+        font-size:12px
+    }
+
+    .mt2 {
+        margin-top:2px
+    }
+
+    .mt5 {
+        margin-top:5px
+    }
+
+    .mt10 {
+        margin-top:10px !important
+    }
+
+    .mt50 {
+        margin-top:50px
+    }
+
+    .mb2 {
+        margin-bottom:2px
+    }
+
+    .mb5 {
+        margin-bottom:5px
+    }
+
+    .ml10 {
+        margin-left:10px
+    }
+
+    .mb10 {
+        margin-bottom:10px
+    }
+
+    .ml15 {
+        margin-left:15px
+    }
+
+    .mr15 {
+        margin-right:15px
+    }
+
+    .p10 {
+        padding:10px
+    }
+
+    .pt10 {
+        padding-top:10px
+    }
+
+    .pb10 {
+        padding-bottom:10px
+    }
+
+    .pSide {
+        padding:15px
+    }
+
+    .keyColor {
+        color:#17191F
+    }
+
+    .mainColor {
+        color:#bb0b0b
+    }
+
+    .grayColor {
+        color:#656565
+    }
+
+    .grayTitleColor {
+        color:#858E98
+    }
+
+    .tc {
+        text-align:center
+    }
+
+    .orderlyList {
+        padding-left:0
+    }
+
+    .orderlyList > li {
+        padding-left: 2em;
+        position:relative
+    }
+
+    .orderlyList > li:before {
+        content: attr(No) "、";
+        position: absolute;
+        left: 0;
+        top:0
+    }
+
+    .none {
+        display:none
+    }
+
+    .fontKaiTi {
+        font-family: 楷体, KaiTi, "PingFang SC Regular", Helvetica, "Droid Sans", Arial, sans-serif
+    }
+
+    .fontNormal {
+        font-family: DINOT, "PingFang SC Regular", Helvetica, "Droid Sans", Arial, sans-serif
+    }
+
+    @media print {
+        html, body {
+            background: #fff !important
+        }
+    }
+
+    .wrapper {
+        padding-left:440px
+    }
+
+    .charView {
+        min-height:960px
+    }
+
+    .charView .charBox {
+        width: 820px;
+        flex-wrap: wrap;
+        margin: 20px auto;
+        background: #fff;
+        padding: 20px;
+        box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+        page-break-after:always
+    }
+
+    .control {
+        width: 400px;
+        position: fixed;
+        left: 0;
+        top:0
+    }
+
+    @media print {
+        .wrapper {
+            padding:0
+        }
+
+        .charView .charBox {
+            padding: 2px;
+            box-shadow:none
+        }
+
+        .control {
+            display: none
+        }
+    }
+
+    .charItem {
+        background-size: 100% 100%;
+        text-align: center;
+        font-weight: normal;
+        margin-left: -2px;
+        margin-top: -2px;
+        position:relative
+    }
+
+    .charItem .bg {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        right:0
+    }
+
+    .charItem .text {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        right: 0
+    }
+
+    .control {
+        background: #fff;
+        padding: 20px 15px;
+        box-sizing: border-box;
+        height: 100%;
+        box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+        overflow:auto
+    }
+
+    .control textarea {
+        display: block;
+        box-sizing: border-box;
+        width: 100%;
+        height: 300px;
+        padding: 10px;
+        border: 1px solid #f6f6f6;
+        border-radius:10px
+    }
+
+    .control .printButton {
+        width: 200px;
+        height: 40px;
+        display: block;
+        margin: 20px auto;
+        border-radius: 2px;
+        cursor:pointer
+    }
+
+    ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+        background-color:#F5F5F5
+    }
+
+    ::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+        background-color:#F5F5F5
+    }
+
+    ::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #aaa
+    }
+
+    label {
+        padding-right: 20px;
+        cursor:pointer
+    }
+
+    label input[type=radio] {
+        margin-right: 3px
+    }
+
+    .sectionBox {
+        border-bottom: 1px solid #f6f6f6;
+        padding: 15px;
+        font-size:15px
+    }
+
+    .sectionBox h3 {
+        font-size: 15px;
+        color: #bb0b0b;
+        margin-bottom: 10px
+    }
+
+    label {
+        padding-right: 20px;
+        cursor:pointer
+    }
+
+    label input[type=radio] {
+        margin-right: 3px
+    }
+
+    label {
+        padding-right: 20px;
+        cursor:pointer
+    }
+
+    label input[type=radio] {
+        margin-right: 3px
+    }
+
+    svg path{
+        fill: green;
+        stroke: green;
+    }
+
+
+    </style>
+</head>
+<body>
+    <div id="app" data-server-rendered="true">
+        <div class="wrapper" >
+            <div class="charView" >
+                <div class="flex charBox" >
+                    <div>
+                        <div style="width: 82px; border-top: 1px dotted green; padding-bottom: 4px;position: relative;text-align: center;">
+                            <div class="bg" style="opacity:0.5;" >
+                                <svg viewBox="0 0 80 48" width="80px" height="48px" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M0,16 H80" stroke-dasharray="4,4" stroke-width="1" stroke="red" fill-opacity="0"></path>
+                                    <path d="M0,32 H80" stroke-dasharray="4,4" stroke-width="1" stroke="red" fill-opacity="0"></path>
+                                    <path d="M0,48 H80" stroke-dasharray="4,4" stroke-width="1" stroke="red" fill-opacity="0"></path>
+                                </svg>
+                            </div>
+                            <div class="text" style="opacity:0.5;position: absolute;font-size: 32px;left: 0;bottom: 16px; width: 100%;" >ní</div>
+                        </div>
+                        <div class="charItem" style="width:80px;height:80px;line-height:80px;font-size:70px;border:2px solid ;color:;"  >
+                            <div class="bg" style="opacity:0.5;" >
+                                <svg viewBox="0 0 80 80" width="80px" height="80px" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M-2 40 L80 40" stroke-dasharray="4,4" stroke-width="1" stroke="red" fill-opacity="0"></path>
+                                    <path d="M40 -2 L40 80" stroke-dasharray="4,4" stroke-width="1" stroke="red" fill-opacity="0"></path>
+                                </svg>
+    
+                            </div>
+                            <div class="text" style="opacity:0.5;font-family:;" >你</div>
+                        </div>
+                    </div>
+                    
+
+
+                    <div class="charItem" style="width:80px;height:80px;line-height:80px;font-size:70px;border:2px solid ;color:;"  >
+                        <div class="bg" style="opacity:0.5;" >
+                            <svg viewBox="0 0 80 80" width="80px" height="80px" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M0 0 L80 80" stroke-dasharray="4,4" stroke-width="1" stroke="red" fill-opacity="0"></path>
+                                <path d="M0 80 L80 0" stroke-dasharray="4,4" stroke-width="1" stroke="red" fill-opacity="0"></path>
+                                <path d="M0 40 L80 40" stroke-dasharray="4,4" stroke-width="1" stroke="red" fill-opacity="0"></path>
+                                <path d="M40 0 L40 80" stroke-dasharray="4,4" stroke-width="1" stroke="red" fill-opacity="0"></path>
+                            </svg>
+                        </div>
+                        <div class="text" style="opacity:0.5;font-family:;" >好</div>
+                    </div>
+                    <div class="charItem" style="width:80px;height:80px;line-height:80px;font-size:70px;border:2px solid ;color:;"  >
+                        <div class="bg" style="opacity:0.5;" >
+                        
+                            <svg viewBox="0 0 80 80" width="80px" height="80px" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M0 0 L80 80" stroke-dasharray="4,4" stroke-width="1" fill-opacity="0"></path>
+                                <path d="M0 80 L80 0" stroke-dasharray="4,4" stroke-width="1" fill-opacity="0"></path>
+                                <path d="M0 40 L80 40" stroke-dasharray="4,4" stroke-width="1" fill-opacity="0"></path>
+                                <path d="M40 0 L40 80" stroke-dasharray="4,4" stroke-width="1" fill-opacity="0"></path>
+                            </svg>
+                        </div>
+                        <div class="text" style="opacity:0.5;font-family:;" >吗</div>
+                    </div>
+                    <div class="charItem" style="width:80px;height:80px;line-height:80px;font-size:70px;border:2px solid ;color:;"  >
+                        <div class="bg" style="opacity:0.5;" ></div>
+                        <div class="text" style="opacity:0.5;font-family:;" ></div>
+                    </div>
+                    <div class="charItem" style="width:80px;height:80px;line-height:80px;font-size:70px;border:2px solid ;color:;"  >
+                        <div class="bg" style="opacity:0.5;" ></div>
+                        <div class="text" style="opacity:0.5;font-family:;" ></div>
+                    </div>
+                    <div class="charItem" style="width:80px;height:80px;line-height:80px;font-size:70px;border:2px solid ;color:;"  >
+                        <div class="bg" style="opacity:0.5;" ></div>
+                        <div class="text" style="opacity:0.5;font-family:;" ></div>
+                    </div>
+                    <div class="charItem" style="width:80px;height:80px;line-height:80px;font-size:70px;border:2px solid ;color:;"  >
+                        <div class="bg" style="opacity:0.5;" ></div>
+                        <div class="text" style="opacity:0.5;font-family:;" ></div>
+                    </div>
+                    <div class="charItem" style="width:80px;height:80px;line-height:80px;font-size:70px;border:2px solid ;color:;"  >
+                        <div class="bg" style="opacity:0.5;" ></div>
+                        <div class="text" style="opacity:0.5;font-family:;" ></div>
+                    </div>
+                    <div class="charItem" style="width:80px;height:80px;line-height:80px;font-size:70px;border:2px solid ;color:;"  >
+                        <div class="bg" style="opacity:0.5;" ></div>
+                        <div class="text" style="opacity:0.5;font-family:;" ></div>
+                    </div>
+                    <div class="charItem" style="width:80px;height:80px;line-height:80px;font-size:70px;border:2px solid ;color:;"  >
+                        <div class="bg" style="opacity:0.5;" ></div>
+                        <div class="text" style="opacity:0.5;font-family:;" ></div>
+                    </div>
+                    
+                </div>
+                <div class="control control"  >
+                    <!---->
+                    <textarea id="chars" type="text" placeholder="请在此处输入要打印的文字" ></textarea>
+                    <section class="sectionBox"   >
+                        <h3>拼音</h3>
+                        <div>
+                            <label class="pinyin-type">
+                                <input type="radio" name="pinyin" value="0"  checked>
+                                拼音格      
+                            </label>
+                            <label class="pinyin-type">
+                                <input type="radio" name="pinyin" value="1"  >
+                                无        
+                            </label>
+                        </div>
+                    </section>
+
+                    <section class="sectionBox"   >
+                        <h3 >字格类型</h3>
+                        <div>
+                            <label class="grid-type">
+                                <input type="radio" name="font" value="1"  checked>
+                                米字格
+                                        
+                            </label>
+                            <label class="grid-type">
+                                <input type="radio" name="font" value="2"  >
+                                田字格      
+                            </label>
+                            
+                        </div>
+                    </section>
+                    <section class="sectionBox">
+                        <h3 >字格颜色</h3>
+                        <div  >
+                            <label  >
+                                <input type="radio" name="font" value="green"  >
+                                绿色
+                                        
+                            </label>
+                            <label  >
+                                <input type="radio" name="font" value="black"  >
+                                黑色
+                                        
+                            </label>
+                            <label  >
+                                <input type="radio" name="font" value="red"  >
+                                红色
+                                        
+                            </label>
+                        </div>
+                    </section>
+                    <section class="sectionBox"   >
+                        <h3 >字格颜色深度 50</h3>
+                        <div  >
+                            <label  >
+                                <input type="range" max="100" min="0" value="50"  >
+                            </label>
+                        </div>
+                    </section>
+                    <section class="sectionBox"   >
+                        <h3 >文字颜色</h3>
+                        <div  >
+                            <label  >
+                                <input type="radio" name="font" value="green"  >
+                                绿色
+                                        
+                            </label>
+                            <label  >
+                                <input type="radio" name="font" value="black"  >
+                                黑色
+                                        
+                            </label>
+                            <label  >
+                                <input type="radio" name="font" value="red"  >
+                                红色
+                                        
+                            </label>
+                        </div>
+                    </section>
+                    <section class="sectionBox"   >
+                        <h3 >文字颜色深度 50</h3>
+                        <div  >
+                            <label  >
+                                <input type="range" max="100" min="0" value="50"  >
+                            </label>
+                        </div>
+                    </section>
+                    <section class="sectionBox"   >
+                        <h3 >文字字体</h3>
+                        <div  >
+                            <label  >
+                                <input type="radio" name="font" value="楷体, KaiTi"  >
+                                楷体
+                                        
+                            </label>
+                            <label  >
+                                <input type="radio" name="font" value="行楷,华文行楷"  >
+                                行楷
+                                        
+                            </label>
+                            <div class="mt10"  >
+                                <label  >
+                                    <input type="radio" name="font" value="customFont,楷体, KaiTi"  >
+                                    自定义字体
+                                                
+                                </label>
+                                <input type="file" placeholder="选择字体文件" style="display:none;"  >
+                            </div>
+                        </div>
+                    </section>
+                    <button class="printButton"  onclick="to_print()">打印</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+
+        function to_print(){
+            window.print()
+        }
+
+        var config = {
+            showPinyin: true,
+            gridType: 'mi',
+            currCount: 70,
+            countConfig: [70,120],
+        }
+
+
+        function bind_radio(sel,func){
+            var nodes = document.querySelectorAll(sel)
+            for (i = 0; i < nodes.length; i++) {
+                nodes[i].addEventListener('click', function(e) {
+                    if(e.target.type == 'radio') {
+                        var val = parseInt(e.target.value)
+                        func(val)
+                        // if(show_pinyin) console.log('show pinyin')
+                        // else console.log('not show pinyin')
+                    }
+                });
+            }
+        }
+
+        bind_radio('.pinyin-type',function(v){
+            config.currCount = config.countConfig[v]
+            if(!v) {
+                console.log('show pinyin')
+                config.showPinyin = true
+            }
+            else {
+                console.log('not show pinyin')
+                config.showPinyin = false
+            }
+            render()
+        })
+
+        bind_radio('.grid-type',function(v){
+            if(v==1) {
+                console.log('show mi')
+                config.gridType = 'mi'
+            }
+            else {
+                console.log('show tian')
+                config.gridType = 'tian'
+            }
+            render()
+        })
+
+        function trans(cc){
+            var str='';
+            var s;
+            for(var i=0;i<cc.length;i++){
+            //alert(cc.charAt(i)+" = "+cc.charCodeAt(i));
+                if(pydic.indexOf(cc.charAt(i))!=-1&&cc.charCodeAt(i)>200){
+                    s=1;
+                    while(pydic.charAt(pydic.indexOf(cc.charAt(i))+s)!=","){
+                        str+=pydic.charAt(pydic.indexOf(cc.charAt(i))+s);
+                        s++;
+                    }
+                    str+=" ";
+                }
+                else{
+                    str+=cc.charAt(i);
+                }
+            }
+            return str;
+        }
+
+        function getGridSvg(){
+            if(config.gridType == 'tian') {
+                return `
+                <svg viewBox="0 0 80 80" width="80px" height="80px" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M-2 40 L80 40" stroke-dasharray="4,4" stroke-width="1" stroke="red" fill-opacity="0"></path>
+                    <path d="M40 -2 L40 80" stroke-dasharray="4,4" stroke-width="1" stroke="red" fill-opacity="0"></path>
+                </svg>
+                `
+            }else {
+                return `
+                <svg viewBox="0 0 80 80" width="80px" height="80px" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 0 L80 80" stroke-dasharray="4,4" stroke-width="1" stroke="red" fill-opacity="0"></path>
+                    <path d="M0 80 L80 0" stroke-dasharray="4,4" stroke-width="1" stroke="red" fill-opacity="0"></path>
+                    <path d="M0 40 L80 40" stroke-dasharray="4,4" stroke-width="1" stroke="red" fill-opacity="0"></path>
+                    <path d="M40 0 L40 80" stroke-dasharray="4,4" stroke-width="1" stroke="red" fill-opacity="0"></path>
+                </svg>
+                `
+            }
+
+        }
+
+        function render(){
+            var content = ''
+            var charList = document.getElementById('chars').value.split('');
+            for(var i =0; i< config.currCount;i++) {
+                var hanzi = (charList[i]?charList[i]:'')
+                content += `
+                    <div>`+
+                        (config.showPinyin?
+                        `<div style="width: 82px; border-top: 1px dotted green; padding-bottom: 4px;position: relative;text-align: center;">
+                            <div class="bg" style="opacity:0.5;" >
+                                <svg viewBox="0 0 80 48" width="80px" height="48px" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M0,16 H80" stroke-dasharray="4,4" stroke-width="1" stroke="red" fill-opacity="0"></path>
+                                    <path d="M0,32 H80" stroke-dasharray="4,4" stroke-width="1" stroke="red" fill-opacity="0"></path>
+                                    <path d="M0,48 H80" stroke-dasharray="4,4" stroke-width="1" stroke="red" fill-opacity="0"></path>
+                                </svg>
+                            </div>
+                            <div class="text" style="opacity:0.5;position: absolute;font-size: 32px;left: 0;bottom: 16px; width: 100%;" >`+trans(hanzi)+`</div>
+                        </div>`:'')+
+                        `<div class="charItem" style="width:80px;height:80px;line-height:80px;font-size:70px;border:2px solid ;color:;"  >
+                            <div class="bg" style="opacity:0.5;" >`+
+
+                                getGridSvg()+
+    
+                            `</div>
+                            <div class="text" style="opacity:0.5;font-family:;">`+
+                                hanzi
+                            +`</div>
+                        </div>
+                    </div>
+                `
+            }
+
+            document.getElementsByClassName('charBox')[0].innerHTML = content;            
+        }
+        
+
+        render()
+
+
+    </script>
+    <!-- <script type="text/javascript" src="https://dictcdn.youlingxi.cn/dist/public/js/vendors/vendors.js?9e539ef5b3c8ed24e92c"></script>
+    <script type="text/javascript" src="https://dictcdn.youlingxi.cn/dist/public/js/copybook/index.js?9e539ef5b3c8ed24e92c"></script> -->
+</body>
+</html>
+
