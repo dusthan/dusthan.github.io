@@ -660,13 +660,33 @@
         }
     }
 
+    .pinyinItem{
+        width: 82px; 
+        border-top: 1px dotted;
+        border-color: green; 
+        padding-bottom: 4px;
+        position: relative;
+        text-align: center;
+    }
+    .pinyinItem .text {
+        opacity:0.5;
+        position: absolute;
+        font-size: 32px;
+        left: 0;
+        bottom: 16px;
+        width: 100%;
+        opacity: 0.5;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
     .charItem {
         background-size: 100% 100%;
         text-align: center;
         font-weight: normal;
         margin-left: -2px;
         margin-top: -2px;
-        position:relative
+        position:relative;
+        width:80px;height:80px;line-height:80px;font-size:70px;border:2px solid; border-color: green; color:black;
     }
 
     .charItem .bg {
@@ -674,7 +694,8 @@
         width: 100%;
         height: 100%;
         left: 0;
-        right:0
+        right:0;
+        opacity: 0.5;
     }
 
     .charItem .text {
@@ -682,7 +703,8 @@
         width: 100%;
         height: 100%;
         left: 0;
-        right: 0
+        right: 0;
+        opacity: 0.5;
     }
 
     .control {
@@ -700,14 +722,14 @@
         width: 100%;
         height: 300px;
         padding: 10px;
-        border: 1px solid #f6f6f6;
+        border: 1px solid forestgreen;
         border-radius:10px
     }
 
     .control .printButton {
-        width: 200px;
+        width: 160px;
         height: 40px;
-        display: block;
+        /* display: block; */
         margin: 20px auto;
         border-radius: 2px;
         cursor:pointer
@@ -763,7 +785,8 @@
 
     label {
         padding-right: 20px;
-        cursor:pointer
+        cursor:pointer;
+        font-family: Arial, Helvetica, sans-serif;
     }
 
     label input[type=radio] {
@@ -802,7 +825,7 @@
                                 </svg>
     
                             </div>
-                            <div class="text" style="opacity:0.5;font-family:;" >你</div>
+                            <div class="text" style="opacity:0.5;font-family:; " >你</div>
                         </div>
                     </div>
                     
@@ -864,6 +887,11 @@
                 <div class="control control"  >
                     <!---->
                     <textarea id="chars" type="text" placeholder="请在此处输入要打印的文字" ></textarea>
+
+                    <button class="printButton"  onclick="finalRender(true)">预览</button>
+                    <button class="printButton"  onclick="to_print()">打印</button>
+
+
                     <section class="sectionBox"   >
                         <h3>拼音</h3>
                         <div>
@@ -879,15 +907,29 @@
                     </section>
 
                     <section class="sectionBox"   >
+                        <h3>模式</h3>
+                        <div>
+                            <label class="write-type">
+                                <input type="radio" name="writeType" value="0"  checked>
+                                自由书写      
+                            </label>
+                            <label class="write-type">
+                                <input type="radio" name="writeType" value="1"  >
+                                临摹模式
+                            </label>
+                        </div>
+                    </section>
+
+                    <section class="sectionBox"   >
                         <h3 >字格类型</h3>
                         <div>
                             <label class="grid-type">
-                                <input type="radio" name="font" value="1"  checked>
+                                <input type="radio" name="gridType" value="1"  checked>
                                 米字格
                                         
                             </label>
                             <label class="grid-type">
-                                <input type="radio" name="font" value="2"  >
+                                <input type="radio" name="gridType" value="2"  >
                                 田字格      
                             </label>
                             
@@ -895,84 +937,99 @@
                     </section>
                     <section class="sectionBox">
                         <h3 >字格颜色</h3>
-                        <div  >
-                            <label  >
-                                <input type="radio" name="font" value="green"  >
+                        <div>
+                            <label class="grid-color">
+                                <input type="radio" name="gridColor" value="green" checked>
                                 绿色
-                                        
                             </label>
-                            <label  >
-                                <input type="radio" name="font" value="black"  >
+                            <label class="grid-color">
+                                <input type="radio" name="gridColor" value="black">
                                 黑色
-                                        
                             </label>
-                            <label  >
-                                <input type="radio" name="font" value="red"  >
+                            <label class="grid-color">
+                                <input type="radio" name="gridColor" value="red">
                                 红色
-                                        
                             </label>
                         </div>
                     </section>
                     <section class="sectionBox"   >
-                        <h3 >字格颜色深度 50</h3>
-                        <div  >
-                            <label  >
-                                <input type="range" max="100" min="0" value="50"  >
+                        <h3>字格颜色深度: <span id="grid_opacity_v">50</span></h3>
+                        <div>
+                            <label>
+                                <input id="grid_opacity" type="range" max="100" min="0" value="50">
                             </label>
                         </div>
                     </section>
-                    <section class="sectionBox"   >
+                    <section class="sectionBox">
                         <h3 >文字颜色</h3>
-                        <div  >
-                            <label  >
-                                <input type="radio" name="font" value="green"  >
-                                绿色
-                                        
+                        <div>
+                            <label class="text-color">
+                                <input type="radio" name="textColor" value="green">
+                                绿色   
                             </label>
-                            <label  >
-                                <input type="radio" name="font" value="black"  >
-                                黑色
-                                        
+                            <label class="text-color">
+                                <input type="radio" name="textColor" value="black" checked>
+                                黑色    
                             </label>
-                            <label  >
-                                <input type="radio" name="font" value="red"  >
-                                红色
-                                        
+                            <label class="text-color">
+                                <input type="radio" name="textColor" value="red">
+                                红色    
                             </label>
                         </div>
                     </section>
                     <section class="sectionBox"   >
-                        <h3 >文字颜色深度 50</h3>
+                        <h3 >文字颜色深度: <span id="text_opacity_v">20</span></h3>
                         <div  >
                             <label  >
-                                <input type="range" max="100" min="0" value="50"  >
+                                <input id="text_opacity" type="range" max="100" min="0" value="20"  >
                             </label>
                         </div>
                     </section>
                     <section class="sectionBox"   >
                         <h3 >文字字体</h3>
-                        <div  >
-                            <label  >
-                                <input type="radio" name="font" value="楷体, KaiTi"  >
-                                楷体
-                                        
+                        <div>
+                            <!-- 
+                            //c8d5ffe248794640aa1c52c746febcfd 王汉宗中楷体简
+                            //4f37d9ccd485487eafd970f175bcd210 庞中华简体 V2007
+                            //d980ce8a92fb4470abd7b5afb37b03c0 昆仑楷体
+                            //fd866f46dfec4029b0af256d5c9622a6 微软简楷体 -->
+                            <label class="cust_font">
+                                <input type="radio" name="font" value="c8d5ffe248794640aa1c52c746febcfd" checked >
+                                王汉宗中楷体简      
                             </label>
-                            <label  >
+                            <label class="cust_font">
+                                <input type="radio" name="font" value="4f37d9ccd485487eafd970f175bcd210"  >
+                                庞中华简体 V2007
+                            </label>
+                            <label class="cust_font">
+                                <input type="radio" name="font" value="d980ce8a92fb4470abd7b5afb37b03c0"  >
+                                昆仑楷体
+                            </label>
+                            <label class="cust_font">
+                                <input type="radio" name="font" value="fd866f46dfec4029b0af256d5c9622a6"  >
+                                微软简楷体
+                            </label>
+
+                            <!-- <label class="cust_font">
+                                <input type="radio" name="font" value="楷体, KaiTi"  >
+                                楷体      
+                            </label>
+                            <label class="cust_font">
                                 <input type="radio" name="font" value="行楷,华文行楷"  >
                                 行楷
-                                        
-                            </label>
-                            <div class="mt10"  >
-                                <label  >
+                            </label> -->
+
+
+                            <!-- <div class="mt10">
+                                <label class="cust_font">
                                     <input type="radio" name="font" value="customFont,楷体, KaiTi"  >
                                     自定义字体
-                                                
                                 </label>
                                 <input type="file" placeholder="选择字体文件" style="display:none;"  >
-                            </div>
+                            </div> -->
                         </div>
                     </section>
-                    <button class="printButton"  onclick="to_print()">打印</button>
+                    
                 </div>
             </div>
         </div>
@@ -985,9 +1042,15 @@
 
         var config = {
             showPinyin: true,
+            writeType: 0,
             gridType: 'mi',
+            gridColor: 'green',
+            textColor: 'black',
+            gridOpacity: 50,
+            textOpacity: 20,
             currCount: 70,
             countConfig: [70,120],
+            charList:[]
         }
 
 
@@ -996,7 +1059,7 @@
             for (i = 0; i < nodes.length; i++) {
                 nodes[i].addEventListener('click', function(e) {
                     if(e.target.type == 'radio') {
-                        var val = parseInt(e.target.value)
+                        var val = e.target.value
                         func(val)
                         // if(show_pinyin) console.log('show pinyin')
                         // else console.log('not show pinyin')
@@ -1005,7 +1068,16 @@
             }
         }
 
+
+        
+
+        document.getElementById('chars').addEventListener('input', function(e){
+            console.log(e.target.value)
+            render()
+        })
+
         bind_radio('.pinyin-type',function(v){
+            v = parseInt(v)
             config.currCount = config.countConfig[v]
             if(!v) {
                 console.log('show pinyin')
@@ -1015,10 +1087,11 @@
                 console.log('not show pinyin')
                 config.showPinyin = false
             }
-            render()
+            render(true)
         })
 
         bind_radio('.grid-type',function(v){
+            v = parseInt(v)
             if(v==1) {
                 console.log('show mi')
                 config.gridType = 'mi'
@@ -1027,7 +1100,41 @@
                 console.log('show tian')
                 config.gridType = 'tian'
             }
-            render()
+            render(true)
+        })
+
+        bind_radio('.write-type',function(v){
+            v = parseInt(v)
+            config.writeType = v;
+            render(true)
+        })
+
+        document.getElementById('grid_opacity').addEventListener('change', function(e){
+            var v = e.target.value
+            config.gridOpacity = v
+            render_grid_opacity(v)
+        })
+
+        document.getElementById('text_opacity').addEventListener('change', function(e){
+            var v = e.target.value
+            config.textOpacity = v
+            render_text_opacity(v)
+        })
+
+
+        bind_radio('.grid-color',function(v){
+            config.gridColor = v;
+            render_grid_color(v)
+            
+         })
+
+        bind_radio('.text-color',function(v){
+            config.textColor = v;
+            render_text_color(v)
+        })
+
+        bind_radio('.cust_font',function(v){
+            $youziku.load(".charBox", v,"");
         })
 
         function trans(cc){
@@ -1072,47 +1179,144 @@
         }
 
         function render(){
-            var content = ''
+
+        }
+
+        function finalRender(force){
+
             var charList = document.getElementById('chars').value.split('');
+
+            charList = charList.filter(item=>{
+                return item.charCodeAt(0) > 255
+            })
+            if(force) {
+                config.charList = charList;
+                render_chars()
+            }
+            else if(!charList.length){
+                config.charList = charList;
+                render_chars()
+            }
+            else if(charList.length && charList.join('')!= config.charList.join('')) {
+                config.charList = charList;
+                render_chars()
+            }
+            
+            render_color_opacity()
+        }
+
+        function render_chars(){
+            console.log('render chars')
+            var content = ''
             for(var i =0; i< config.currCount;i++) {
-                var hanzi = (charList[i]?charList[i]:'')
+                var row = Math.floor(i/10)
+                var hanzi = (config.charList[row]?config.charList[row]:'')
                 content += `
                     <div>`+
                         (config.showPinyin?
-                        `<div style="width: 82px; border-top: 1px dotted green; padding-bottom: 4px;position: relative;text-align: center;">
-                            <div class="bg" style="opacity:0.5;" >
+                        `<div class="pinyinItem">
+                            <div class="bg">
                                 <svg viewBox="0 0 80 48" width="80px" height="48px" version="1.1" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M0,16 H80" stroke-dasharray="4,4" stroke-width="1" stroke="red" fill-opacity="0"></path>
                                     <path d="M0,32 H80" stroke-dasharray="4,4" stroke-width="1" stroke="red" fill-opacity="0"></path>
                                     <path d="M0,48 H80" stroke-dasharray="4,4" stroke-width="1" stroke="red" fill-opacity="0"></path>
                                 </svg>
                             </div>
-                            <div class="text" style="opacity:0.5;position: absolute;font-size: 32px;left: 0;bottom: 16px; width: 100%;" >`+trans(hanzi)+`</div>
+                            <div class="text">`+ ((i%10==0 || (config.writeType == 1))?trans(hanzi):'')+`</div>
                         </div>`:'')+
-                        `<div class="charItem" style="width:80px;height:80px;line-height:80px;font-size:70px;border:2px solid ;color:;"  >
-                            <div class="bg" style="opacity:0.5;" >`+
+                        `<div class="charItem">
+                            <div class="bg">`+
 
                                 getGridSvg()+
     
                             `</div>
-                            <div class="text" style="opacity:0.5;font-family:;">`+
-                                hanzi
+                            <div class="text">`+
+                                ((i%10==0 || (config.writeType == 1))?hanzi:'')
                             +`</div>
                         </div>
                     </div>
                 `
             }
-
-            document.getElementsByClassName('charBox')[0].innerHTML = content;            
+            document.getElementsByClassName('charBox')[0].innerHTML = content;
+            if(config.charList.length) $youziku.submit("charBox");
         }
-        
 
-        render()
+        function render_color_opacity(){
+            render_grid_color(config.gridColor)
+            render_grid_opacity(config.gridOpacity)
+            render_text_color(config.textColor)
+            render_text_opacity(config.textOpacity)
+        }
+
+        function render_grid_color(v){
+            var grids = document.querySelectorAll('.charItem')
+            var pinyins = document.querySelectorAll('.pinyinItem')
+            
+            for (i = 0; i < grids.length; i++) {
+                grids[i].style.borderColor = v
+            }
+
+            for (i = 0; i < pinyins.length; i++) {
+                pinyins[i].style.borderColor = v
+            }
+            var stokes = document.querySelectorAll('svg path')
+            for (i = 0; i < stokes.length; i++) {
+                stokes[i].style.stroke = v
+            }
+        }
+
+        function render_text_color(v){
+            var grids = document.querySelectorAll('.charItem')
+            var pinyins = document.querySelectorAll('.pinyinItem')
+            for (i = 0; i < grids.length; i++) {
+                grids[i].style.color = v
+            }
+            for (i = 0; i < pinyins.length; i++) {
+                pinyins[i].style.color = v
+            }
+        }
+
+        function render_grid_opacity(v){
+            document.getElementById('grid_opacity_v').innerText = v
+            var grids = document.querySelectorAll('.charItem .bg')
+            
+            for (i = 0; i < grids.length; i++) {
+                grids[i].style.opacity = v/100;
+            }
+        }
+
+
+        function  render_text_opacity(v){
+            document.getElementById('text_opacity_v').innerText = v
+            var texts = document.querySelectorAll('.charItem .text')
+            
+            for (i = 0; i < texts.length; i++) {
+                if(i%10==0) {
+                    texts[i].style.opacity = v*2/100;
+                }
+                else texts[i].style.opacity = v/100;
+            }
+            var pinyins = document.querySelectorAll('.pinyinItem .text')
+            for (i = 0; i < pinyins.length; i++) {
+                if(i%10==0) {
+                    pinyins[i].style.opacity = v*2/100;
+                }
+                else pinyins[i].style.opacity = v/100;
+            }
+        }
+
+
+        finalRender(true)
+
+
 
 
     </script>
-    <!-- <script type="text/javascript" src="https://dictcdn.youlingxi.cn/dist/public/js/vendors/vendors.js?9e539ef5b3c8ed24e92c"></script>
-    <script type="text/javascript" src="https://dictcdn.youlingxi.cn/dist/public/js/copybook/index.js?9e539ef5b3c8ed24e92c"></script> -->
+    <script type="text/javascript" src="http://cdn.repository.webfont.com/wwwroot/js/wf/youziku.api.min.js"></script>
+    <script type="text/javascript">
+        $youziku.load(".charBox", "c8d5ffe248794640aa1c52c746febcfd","");
+        $youziku.draw(0);
+    </script>
 </body>
 </html>
 
