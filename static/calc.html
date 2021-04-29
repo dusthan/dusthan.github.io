@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>口算题卡</title>
+</head>
+<style>
+    table{border: none;width: 800px; margin: 20px auto;}
+    td{width: 20%;border: none; height: 46px;}
+    .header{
+        display: inline-block;
+        height: 30px;
+        line-height: 30px;
+        vertical-align: middle;
+        width: 30%;
+    }
+    .sectionBox {
+        border-bottom: 1px solid #f6f6f6;
+        padding: 15px;
+        font-size: 15px
+    }
+
+    #config {
+        width: 400px;
+        position: fixed;
+        left: 0;
+        top: 0;
+        padding: 20px;
+    }
+
+    #config .printButton {
+        width: 160px;
+        height: 40px;
+        margin: 20px auto;
+        border-radius: 2px;
+        cursor: pointer;
+        border: 1px solid #f6f6f6;
+        outline: none;
+        -webkit-appearance: none;
+    }
+
+    @media print {
+        #config {
+            display: none
+        }
+    }
+
+    .sectionBox h3 {
+        font-size: 15px;
+        color: #bb0b0b;
+        margin-bottom: 10px
+    }
+
+    label {
+        padding-right: 20px;
+        cursor: pointer;
+        font-family: Arial, Helvetica, sans-serif
+    }
+
+    label input[type=radio] {
+        margin-right: 3px
+    }
+</style>
+<body>
+
+    <div id="config">
+        <button class="printButton"  onclick="finalRender()">预览</button>
+        <button class="printButton"  onclick="to_print()">打印</button>
+
+        <section class="sectionBox">
+            <h3>题目类型</h3>
+            <div>
+                <label class="calc_type">
+                    <input type="radio" name="calc_type" value="+-" checked>
+                    加减混合混合
+                </label>
+                <label class="calc_type">
+                    <input type="radio" name="calc_type" value="+">
+                    加法
+                </label>
+                <label class="calc_type">
+                    <input type="radio" name="calc_type" value="-">
+                    减法
+                </label>
+            </div>
+        </section>
+
+
+        <section class="sectionBox">
+            <h3>题目类型</h3>
+            <div>
+                <label class="calc_max">
+                    <input type="radio" name="calc_max" value="100" checked>
+                    100以内
+                </label>
+                <label class="calc_max">
+                    <input type="radio" name="calc_max" value="20">
+                    20以内
+                </label>
+                <label class="calc_max">
+                    <input type="radio" name="calc_max" value="10">
+                    10以内
+                </label>
+            </div>
+        </section>
+
+
+        <section class="sectionBox"   >
+            <h3>题目数量: <span id="cnt_v">100</span></h3>
+            <div>
+                <label>
+                    <input id="cnt" type="range" max="100" min="20" step="5" value="100">
+                </label>
+            </div>
+        </section>
+    </div>
+    <div id="print">
+        <div style="height: 30px;width: 820px;margin: 0 auto;">
+            <div class="header">班级：__________</div>
+            <div class="header">姓名：__________</div>
+            <div class="header">分数：__________</div>
+        </div>
+    
+        <table id="exprList">
+            
+        </table>
+    </div>
+</body>
+
+<script>
+
+
+var config = {
+    place:'______',
+    cnt: 100,
+    max: 20,
+    op: '+-'
+}
+
+function to_print(){
+    window.print()
+}
+
+
+function bind_radio(sel,func){
+    var nodes = document.querySelectorAll(sel)
+    for (i = 0; i < nodes.length; i++) {
+        nodes[i].addEventListener('click', function(e) {
+            if(e.target.type == 'radio') {
+                var val = e.target.value
+                func(val)
+                // if(show_pinyin) console.log('show pinyin')
+                // else console.log('not show pinyin')
+            }
+        });
+    }
+}
+
+
+bind_radio('.calc_type',function(v){
+    config.op = v
+
+    finalRender()
+})
+
+bind_radio('.calc_max',function(v){
+    config.max = parseInt(v)
+
+    finalRender()
+})
+
+document.getElementById('cnt').addEventListener('change', function(e){
+    var v = parseInt(e.target.value)
+    config.cnt = v
+    document.getElementById('cnt_v').innerText = v
+    finalRender()
+})
+
+function randomNum(minNum,maxNum){ 
+    return parseInt(Math.random()*(maxNum-minNum+1)+minNum,10);     
+}
+
+function gen_expr(max,op){
+    let d1 = randomNum(1,max)
+    let d2 = randomNum(1,max)
+    var place = config.place
+    if(op=="+"){
+        if(d1+d2>max){
+            if(d1>d2) {
+                return [d2,op,place,'=',d1]
+            }else {
+                return [d1,op,place,'=',d2]
+            }
+        }
+        else {
+            return [d1,op,d2,'=',place]
+        }
+    }
+    if(op=="-"){
+        if(d1>d2) return [d1,op,d2,'=',place]
+        else return [d2,op,d1,'=',place]
+    }
+}
+
+function render(max,op,cnt){
+    var content = ''
+    if(cnt%5!=0) {
+        cnt = Math.ceil(cnt/5)*5
+    }
+
+    var sign = op;
+
+    for (let i = 0; i < cnt; i++) {
+        if(op=="+-") {
+            sign = randomNum(1,10)%2==1?'-':'+'
+        }
+        
+        if(i%5==0){
+            content += '<tr>'
+        }
+
+        var arr = gen_expr(max,sign)
+
+        content += ('<td>'+arr.join(' ')+'</td>')
+
+
+        if(i%5==4 || i==cnt-1){
+            content += '</tr>'
+        }
+    }
+    document.getElementById('exprList').innerHTML = content
+
+}
+
+function finalRender(){
+    var max = config.max
+    var op = config.op
+    var cnt = config.cnt
+    render(max,op,cnt)
+}
+
+finalRender()
+
+</script>
+
+
+</html>
