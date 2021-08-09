@@ -91,6 +91,11 @@
                     <input type="radio" name="calc_type" value="-">
                     减法
                 </label>
+                <br />
+                <label class="calc_type">
+                    <input type="radio" name="calc_type" value="×">
+                    乘法
+                </label>
             </div>
         </section>
 
@@ -190,6 +195,9 @@ function randomNum(minNum,maxNum){
 }
 
 function gen_expr(max,op){
+    if(op=="×"){
+        max=9;   
+    }
     let d1 = randomNum(1,max)
     let d2 = randomNum(1,max)
     var place = config.place
@@ -208,6 +216,9 @@ function gen_expr(max,op){
     if(op=="-"){
         if(d1>d2) return [d1,op,d2,'=',place]
         else return [d2,op,d1,'=',place]
+    }
+    if(op=="×"){
+        return [d1,op,d2,'=',place]
     }
 }
 
