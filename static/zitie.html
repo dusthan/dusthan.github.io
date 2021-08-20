@@ -532,7 +532,7 @@
         }
     
         .charView .charBox {
-            width: 820px;
+            width: 1100px;
             flex-wrap: wrap;
             margin: 0px auto;
             margin-top: 20px;
@@ -721,7 +721,7 @@
     <div id="app" data-server-rendered="true">
         <div class="wrapper" >
             <div class="charView" >
-                <div style="height: 30px;width: 820px;margin: 0 auto;">
+                <div style="height: 30px;width: 1100px;margin: 0 auto;">
                     <div class="header">班级：__________</div>
                     <div class="header">姓名：__________</div>
                     <div class="header">分数：__________</div>
@@ -891,8 +891,8 @@
             textColor: 'black',
             gridOpacity: 50,
             textOpacity: 20,
-            currCount: 70,
-            countConfig: [70,120],
+            currCount: 130,
+            countConfig: [130,234],
             charList:[]
         }
 
@@ -1052,7 +1052,7 @@
             console.log('render chars')
             var content = ''
             for(var i =0; i< config.currCount;i++) {
-                var row = Math.floor(i/10)
+                var row = Math.floor(i/13)
                 var hanzi = (config.charList[row]?config.charList[row]:'')
                 content += `
                     <div>`+
@@ -1065,7 +1065,7 @@
                                     <path d="M0,48 H80" stroke-dasharray="4,4" stroke-width="1" stroke="red" fill-opacity="0"></path>
                                 </svg>
                             </div>
-                            <div class="text">`+ ((i%10==0 || (config.writeType == 1))?trans(hanzi):'')+`</div>
+                            <div class="text">`+ ((i%13==0 || (config.writeType == 1))?trans(hanzi):'')+`</div>
                         </div>`:'')+
                         `<div class="charItem">
                             <div class="bg">`+
@@ -1074,7 +1074,7 @@
     
                             `</div>
                             <div class="text">`+
-                                ((i%10==0 || (config.writeType == 1))?hanzi:'')
+                                ((i%13==0 || (config.writeType == 1))?hanzi:'')
                             +`</div>
                         </div>
                     </div>
@@ -1134,14 +1134,14 @@
             var texts = document.querySelectorAll('.charItem .text')
             
             for (i = 0; i < texts.length; i++) {
-                if(i%10==0) {
+                if(i%13==0) {
                     texts[i].style.opacity = v*2/100;
                 }
                 else texts[i].style.opacity = v/100;
             }
             var pinyins = document.querySelectorAll('.pinyinItem .text')
             for (i = 0; i < pinyins.length; i++) {
-                if(i%10==0) {
+                if(i%13==0) {
                     pinyins[i].style.opacity = v*2/100;
                 }
                 else pinyins[i].style.opacity = v/100;
