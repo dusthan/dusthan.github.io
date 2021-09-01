@@ -230,6 +230,8 @@ function render(max,op,cnt){
 
     var sign = op;
 
+    var arrList=[]
+
     for (let i = 0; i < cnt; i++) {
         if(op=="+-") {
             sign = randomNum(1,10)%2==1?'-':'+'
@@ -240,6 +242,18 @@ function render(max,op,cnt){
         }
 
         var arr = gen_expr(max,sign)
+
+        while(sign=="×" &&  (arr[0]==1 || arr[2]==1  )) {
+            arr = gen_expr(max,sign)
+        }
+        if(arrList.indexOf(arr)>-1)
+        {
+            i--;
+            continue;
+        }
+        else{
+            arrList.push(arr)
+        }
 
         content += ('<td>'+arr.join(' ')+'</td>')
 
