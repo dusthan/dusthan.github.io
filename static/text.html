@@ -1,167 +1,238 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <title>在线文本对比与集合工具</title>
-    <style>
-        body { font-family: sans-serif; margin: 20px; background-color: #f4f7f6; }
-        .container { display: flex; gap: 20px; margin-bottom: 20px; }
-        .column { flex: 1; display: flex; flex-direction: column; }
-        label { margin-bottom: 8px; font-weight: bold; color: #333; }
-        textarea { height: 300px; padding: 10px; border: 1px solid #ccc; border-radius: 4px; resize: vertical; font-family: monospace; }
-        
-        .toolbar { margin: 10px 0; display: flex; flex-wrap: wrap; gap: 10px; }
-        button { padding: 8px 15px; cursor: pointer; border: none; border-radius: 4px; background-color: #007bff; color: white; transition: background 0.2s; }
-        button:hover { background-color: #0056b3; }
-        button.secondary { background-color: #6c757d; }
-        button.success { background-color: #28a745; }
+<meta charset="UTF-8">
+<title>在线文本对比与集合工具</title>
+<style>
+body { font-family: sans-serif; margin: 20px; background-color: #f4f7f6; }
+.container { display: flex; gap: 20px; margin-bottom: 20px; }
+.column { flex: 1; display: flex; flex-direction: column; }
+label { margin-bottom: 8px; font-weight: bold; color: #333; }
+textarea { height: 300px; padding: 10px; border: 1px solid #ccc; border-radius: 4px; resize: vertical; font-family: monospace; }
 
-        .result-section { margin-top: 30px; border-top: 2px solid #ddd; padding-top: 20px; }
-        .result-title { font-size: 1.2em; font-weight: bold; margin-bottom: 10px; display: block; }
-        #result-display { 
-            background: white; border: 1px solid #ccc; padding: 15px; min-height: 100px; 
-            white-space: pre-wrap; word-break: break-all; border-radius: 4px; font-family: monospace;
-        }
+.toolbar { margin: 10px 0; display: flex; flex-wrap: wrap; gap: 10px; }
+button { padding: 8px 15px; cursor: pointer; border: none; border-radius: 4px; background-color: #007bff; color: white; transition: background 0.2s; }
+button:hover { background-color: #0056b3; }
+button.secondary { background-color: #6c757d; }
+button.success { background-color: #28a745; }
 
-        /* 差异对比样式 */
-        .diff-added { background-color: #e6ffed; color: #22863a; text-decoration: none; }
-        .diff-removed { background-color: #ffeef0; color: #cb2431; text-decoration: line-through; }
-        .diff-equal { color: #555; }
-    </style>
+.result-section { margin-top: 30px; border-top: 2px solid #ddd; padding-top: 20px; }
+.result-title { font-size: 1.2em; font-weight: bold; margin-bottom: 10px; display: block; }
+#resultDisplay { width: 100%; height: 200px; background: #f8f9fa; box-sizing: border-box; }
+
+/* 差异对比样式 */
+.diff-added { background-color: #e6ffed; color: #22863a; text-decoration: none; }
+.diff-removed { background-color: #ffeef0; color: #cb2431; text-decoration: line-through; }
+.diff-equal { color: #555; }
+
+/* 工具按钮行 */
+.tool-row { display: flex; gap: 8px; margin-top: 8px; }
+.tool-btn { padding: 6px 12px; cursor: pointer; border: none; border-radius: 4px; background-color: #17a2b8; color: white; font-size: 12px; }
+.tool-btn:hover { background-color: #138496; }
+.tool-btn.copy { background-color: #6f42c1; }
+.tool-btn.copy:hover { background-color: #5a32a3; }
+.tool-btn.shuttle { background-color: #fd7e14; }
+.tool-btn.shuttle:hover { background-color: #e8590c; }
+</style>
 </head>
 <body>
 
-    <h2>在线文本工具</h2>
-    
-    <div class="container">
-        <!-- 左栏 -->
-        <div class="column">
-            <label>文本 A (每行一个条目)</label>
-            <textarea id="textA" placeholder="在此输入文本A..."></textarea>
-            <div class="toolbar">
-                <button class="secondary" onclick="sortText('textA')">A 排序</button>
-                <button class="secondary" onclick="clearText('textA')">清空</button>
-            </div>
-        </div>
+<h2>在线文本工具</h2>
 
-        <!-- 右栏 -->
-        <div class="column">
-            <label>文本 B (每行一个条目)</label>
-            <textarea id="textB" placeholder="在此输入文本B..."></textarea>
-            <div class="toolbar">
-                <button class="secondary" onclick="sortText('textB')">B 排序</button>
-                <button class="secondary" onclick="clearText('textB')">清空</button>
-            </div>
-        </div>
-    </div>
+<div class="container">
+<!-- 左栏 -->
+<div class="column">
+<label>文本 A (每行一个条目)</label>
+<textarea id="textA" placeholder="在此输入文本 A..."></textarea>
+<div class="tool-row">
+<button class="tool-btn copy" onclick="copyToClipboard('textA')">复制 A</button>
+<button class="tool-btn secondary" onclick="sortText('textA')">A 排序</button>
+<button class="tool-btn secondary" onclick="clearText('textA')">清空</button>
+<button class="tool-btn shuttle" onclick="shuttleToA()"> shuttle &larr; 结果</button>
+</div>
+</div>
 
-    <!-- 集合操作按钮 -->
-    <div class="toolbar" style="justify-content: center; background: #eee; padding: 15px; border-radius: 8px;">
-        <button class="success" onclick="handleDeduplicate()">文本去重 (A+B)</button>
-        <button class="success" onclick="handleIntersection()">取交集 (A∩B)</button>
-        <button class="success" onclick="handleUnion()">取并集 (A∪B)</button>
-        <button class="success" onclick="handleDifference()">取差集 (A-B)</button>
-        <button onclick="handleCompare()">差异对比 (Diff)</button>
-    </div>
+<!-- 右栏 -->
+<div class="column">
+<label>文本 B (每行一个条目)</label>
+<textarea id="textB" placeholder="在此输入文本 B..."></textarea>
+<div class="tool-row">
+<button class="tool-btn copy" onclick="copyToClipboard('textB')">复制 B</button>
+<button class="tool-btn secondary" onclick="sortText('textB')">B 排序</button>
+<button class="tool-btn secondary" onclick="clearText('textB')">清空</button>
+<button class="tool-btn shuttle" onclick="shuttleToB()"> shuttle &rarr; 结果</button>
+</div>
+</div>
+</div>
 
-    <!-- 结果显示区 -->
-    <div class="result-section">
-        <span class="result-title">操作结果: <small id="result-stats" style="font-weight: normal; font-size: 0.7em; margin-left:10px;"></small></span>
-        <div id="result-display">结果将在这里显示...</div>
-    </div>
+<!-- 集合操作按钮 -->
+<div class="toolbar" style="justify-content: center; background: #eee; padding: 15px; border-radius: 8px;">
+<button class="success" onclick="handleDeduplicate()">文本去重 (A+B)</button>
+<button class="success" onclick="handleIntersection()">取交集 (A∩B)</button>
+<button class="success" onclick="handleUnion()">取并集 (A∪B)</button>
+<button class="success" onclick="handleDifferenceAB()">取差集 (A-B)</button>
+<button class="success" onclick="handleDifferenceBA()">取差集 (B-A)</button>
+<button onclick="handleCompare()">差异对比 (Diff)</button>
+</div>
 
-    <!-- 引入 diff 库实现高级对比 (可选，也可手动实现简单行对比) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsdiff/5.1.0/diff.min.js"></script>
+<!-- 结果显示区 -->
+<div class="result-section">
+<span class="result-title">操作结果：<small id="result-stats" style="font-weight: normal; font-size: 0.7em; margin-left:10px;"></small></span>
+<textarea id="resultDisplay" readonly style="height: 200px; background: #f8f9fa;"></textarea>
+<div class="tool-row">
+<button class="tool-btn copy" onclick="copyResult()">复制结果</button>
+</div>
+</div>
 
-    <script>
-        // 获取文本数组（按行分割，去除首尾空格）
-        function getLines(id) {
-            const text = document.getElementById(id).value;
-            return text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
-        }
+<!-- 引入 diff 库实现高级对比 (可选，也可手动实现简单行对比) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsdiff/5.1.0/diff.min.js"></script>
 
-        // 排序功能
-        function sortText(id) {
-            const lines = getLines(id);
-            lines.sort((a, b) => a.localeCompare(b, 'zh-Hans-CN')); // 支持中文排序
-            document.getElementById(id).value = lines.join('\n');
-        }
+<script>
+// 获取文本数组（按行分割，去除首尾空格）
+function getLines(id) {
+const text = document.getElementById(id).value;
+return text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+}
 
-        function clearText(id) {
-            document.getElementById(id).value = '';
-        }
+// 排序功能
+function sortText(id) {
+const lines = getLines(id);
+lines.sort((a, b) => a.localeCompare(b, 'zh-Hans-CN')); // 支持中文排序
+document.getElementById(id).value = lines.join('\n');
+}
 
-        // 显示结果
-        function showResult(title, contentArr, isHtml = false) {
-            const display = document.getElementById('result-display');
-            const stats = document.getElementById('result-stats');
-            
-            if (isHtml) {
-                display.innerHTML = contentArr;
-            } else {
-                display.textContent = contentArr.join('\n');
-            }
-            stats.textContent = isHtml ? "" : `共 ${contentArr.length} 条结果`;
-        }
+function clearText(id) {
+document.getElementById(id).value = '';
+}
 
-        // 1. 文本去重 (合并 A 和 B 后去重)
-        function handleDeduplicate() {
-            const linesA = getLines('textA');
-            const linesB = getLines('textB');
-            const combined = [...new Set([...linesA, ...linesB])];
-            showResult("去重结果", combined);
-        }
+// 复制到剪贴板
+async function copyToClipboard(id) {
+const textarea = document.getElementById(id);
+textarea.select();
+try {
+await navigator.clipboard.writeText(textarea.value);
+showToast(id === 'textA' ? '已复制文本 A' : '已复制文本 B');
+} catch (err) {
+document.execCommand('copy');
+showToast(id === 'textA' ? '已复制文本 A' : '已复制文本 B');
+}
+}
 
-        // 2. 取交集 (A 和 B 都有的)
-        function handleIntersection() {
-            const linesA = getLines('textA');
-            const setB = new Set(getLines('textB'));
-            const intersection = linesA.filter(x => setB.has(x));
-            // 结果内部再次去重
-            showResult("交集结果", [...new Set(intersection)]);
-        }
+// 复制结果
+async function copyResult() {
+const result = document.getElementById('resultDisplay').value;
+try {
+await navigator.clipboard.writeText(result);
+showToast('已复制结果');
+} catch (err) {
+document.execCommand('copy');
+showToast('已复制结果');
+}
+}
 
-        // 3. 取并集 (A 和 B 所有的，且不重复)
-        function handleUnion() {
-            const linesA = getLines('textA');
-            const linesB = getLines('textB');
-            const union = [...new Set([...linesA, ...linesB])];
-            showResult("并集结果", union);
-        }
+// 穿梭功能：结果 -> A
+function shuttleToA() {
+const result = document.getElementById('resultDisplay').value;
+document.getElementById('textA').value = result;
+showToast('结果已移动到文本 A');
+}
 
-        // 4. 取差集 (A 中有但 B 中没有的)
-        function handleDifference() {
-            const linesA = getLines('textA');
-            const setB = new Set(getLines('textB'));
-            const difference = linesA.filter(x => !setB.has(x));
-            showResult("差集 (A-B) 结果", [...new Set(difference)]);
-        }
+// 穿梭功能：结果 -> B
+function shuttleToB() {
+const result = document.getElementById('resultDisplay').value;
+document.getElementById('textB').value = result;
+showToast('结果已移动到文本 B');
+}
 
-        // 5. 文本差异对比 (行级对比)
-        function handleCompare() {
-            const textA = document.getElementById('textA').value;
-            const textB = document.getElementById('textB').value;
-            
-            // 使用 jsdiff 库进行行对比
-            const diff = Diff.diffLines(textA, textB);
-            
-            let fragment = "";
-            diff.forEach((part) => {
-                const colorClass = part.added ? 'diff-added' : 
-                                   part.removed ? 'diff-removed' : 'diff-equal';
-                const prefix = part.added ? '+ ' : part.removed ? '- ' : '  ';
-                
-                // 将文本中的换行符处理好
-                const escapedText = part.value
-                    .replace(/&/g, '&amp;')
-                    .replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;');
-                
-                fragment += `<span class="${colorClass}">${escapedText}</span>`;
-            });
+// 显示结果
+function showResult(title, contentArr, isHtml = false) {
+const display = document.getElementById('resultDisplay');
+const stats = document.getElementById('result-stats');
 
-            showResult("差异对比", fragment, true);
-        }
-    </script>
+if (isHtml) {
+display.value = contentArr.join('\n');
+} else {
+display.value = contentArr.join('\n');
+}
+stats.textContent = `共 ${contentArr.length} 条结果`;
+}
+
+// Toast 提示
+function showToast(message) {
+const toast = document.createElement('div');
+toast.textContent = message;
+toast.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #333; color: white; padding: 10px 20px; border-radius: 4px; z-index: 1000; animation: fadeIn 0.3s;';
+document.body.appendChild(toast);
+setTimeout(() => toast.remove(), 2000);
+}
+
+// 添加动画样式
+const style = document.createElement('style');
+style.textContent = `
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+`;
+document.head.appendChild(style);
+
+// 1. 文本去重 (合并 A 和 B 后去重)
+function handleDeduplicate() {
+const linesA = getLines('textA');
+const linesB = getLines('textB');
+const combined = [...new Set([...linesA, ...linesB])];
+showResult("去重结果", combined);
+}
+
+// 2. 取交集 (A 和 B 都有的)
+function handleIntersection() {
+const linesA = getLines('textA');
+const setB = new Set(getLines('textB'));
+const intersection = linesA.filter(x => setB.has(x));
+showResult("交集结果", [...new Set(intersection)]);
+}
+
+// 3. 取并集 (A 和 B 所有的，且不重复)
+function handleUnion() {
+const linesA = getLines('textA');
+const linesB = getLines('textB');
+const union = [...new Set([...linesA, ...linesB])];
+showResult("并集结果", union);
+}
+
+// 4. 取差集 (A 中有但 B 中没有的)
+function handleDifferenceAB() {
+const linesA = getLines('textA');
+const setB = new Set(getLines('textB'));
+const difference = linesA.filter(x => !setB.has(x));
+showResult("差集 (A-B) 结果", [...new Set(difference)]);
+}
+
+// 5. 取差集 (B 中有但 A 中没有的)
+function handleDifferenceBA() {
+const linesB = getLines('textB');
+const setA = new Set(getLines('textA'));
+const difference = linesB.filter(x => !setA.has(x));
+showResult("差集 (B-A) 结果", [...new Set(difference)]);
+}
+
+// 6. 文本差异对比 (行级对比)
+function handleCompare() {
+const textA = document.getElementById('textA').value;
+const textB = document.getElementById('textB').value;
+
+// 使用 jsdiff 库进行行对比
+const diff = Diff.diffLines(textA, textB);
+
+let lines = [];
+diff.forEach((part) => {
+const prefix = part.added ? '+ ' : part.removed ? '- ' : ' ';
+const text = part.value.replace(/\n$/, '');
+text.split('\n').forEach((line, i) => {
+if (i > 0) lines.push(prefix + line);
+else lines.push(prefix + line);
+});
+});
+
+showResult("差异对比", lines);
+}
+</script>
 </body>
 </html>
