@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compose Tool - Docker配置转换工具</title>
+    <script>window.VOLUME_PREFIX = window.VOLUME_PREFIX || '/opt/docker/{container_name}';</script>
+    <script src="config.js" onerror="console.warn('config.js not loaded, using fallback')"></script>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 512'><path fill='%232496ed' d='M349.9 236.3h-66.1v-59.4h66.1v59.4zm0-204.3h-66.1v60.7h66.1V32zm78.2 144.8H362v59.4h66.1v-59.4zm-156.3-72.1h-66.1v60.1h66.1v-60.1zm78.1 0h-66.1v60.1h66.1v-60.1zm276.8 100c-14.4-9.7-47.6-13.2-73.1-8.4-3.3-24-16.7-44.9-41.1-63.7l-14-9.3-9.3 14c-18.4 27.8-23.4 73.6-3.7 103.8-8.7 4.7-25.8 11.1-48.4 10.7H2.4c-7.6 42.6-1 99.4 25.9 143.2 29.2 47.6 81.8 71.5 152.8 71.5 133.2 0 241.9-66.8 294.4-210.6 19.1.3 60.4.5 81.6-40.5.5-.9 1.7-3.2 5.5-11.2l2-4.4-13.7-9.2zM124.1 236.3H58v59.4h66.1v-59.4zm78.1 0h-66.1v59.4h66.1v-59.4zm78.1 0h-66.1v59.4h66.1v-59.4zm-78.1-72.1H136v60.1h66.1v-60.1z'/></svg>" type="image/svg+xml">
+    <style>
+        :root { --primary-color: #2496ed; --secondary-color: #f8f9fa; --border-color: #dee2e6; --success-color: #28a745; --error-color: #dc3545; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { height: 100%; overflow: hidden; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.5; color: #333; background-color: #f0f2f5; padding: 10px 15px; display: flex; flex-direction: column; }
+        .container { max-width: 1600px; width: 100%; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto 1fr; gap: 10px; flex: 1; min-height: 0; }
+        header { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 8px 20px; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); flex-wrap: wrap; }
+        .docker-logo { width: 32px; height: 32px; flex-shrink: 0; }
+        header h1 { color: var(--primary-color); margin: 0; font-size: 20px; white-space: nowrap; }
+        header .sep { color: #ccc; font-size: 20px; margin: 0 2px; }
+        header p { margin: 0; font-size: 14px; color: #888; }
+        .panel { background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); padding: 16px; display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+        .panel > h2 { margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border-color); color: var(--primary-color); font-size: 18px; flex-shrink: 0; }
+        .panel-section { flex: 1; display: flex; flex-direction: column; min-height: 0; margin-bottom: 10px; }
+        .panel-section:last-child { margin-bottom: 0; }
+        .panel-section .output { flex: 1; min-height: 150px; }
+        .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border-color); flex-shrink: 0; }
+        .panel-header h2 { color: var(--primary-color); margin: 0; padding: 0; border: none; font-size: 18px; }
+        .copy-output-btn { display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; font-size: 14px; font-weight: 600; color: #555; background: #f0f2f5; border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer; transition: background 0.2s, color 0.2s, border-color 0.2s; white-space: nowrap; flex-shrink: 0; }
+        .copy-output-btn:hover { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+        .copy-output-btn.copied { background: var(--success-color); color: white; border-color: var(--success-color); }
+        .copy-output-btn svg { flex-shrink: 0; }
+        .input-group { margin-bottom: 10px; flex-shrink: 0; }
+        .input-group.flex-grow { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+        label { display: block; margin-bottom: 3px; font-weight: 600; font-size: 16px; }
+        input[type="text"], textarea { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; font-family: inherit; font-size: 16px; }
+        textarea { resize: vertical; flex: 1; min-height: 80px; font-family: monospace; font-size: 15px; }
+        .checkbox-group { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 6px; }
+        .checkbox-item { display: flex; align-items: center; gap: 5px; }
+        .checkbox-item input[type="checkbox"] { width: 16px; height: 16px; flex-shrink: 0; }
+        .checkbox-item label { font-weight: normal; margin-bottom: 0; font-size: 15px; }
+        button { background-color: var(--primary-color); color: white; border: none; padding: 10px 18px; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: 600; transition: background-color 0.3s; margin-top: 8px; flex-shrink: 0; }
+        button:hover { background-color: #1a7bc9; }
+        .output { background-color: var(--secondary-color); border: 1px solid var(--border-color); border-radius: 4px; padding: 14px; font-family: monospace; font-size: 15px; white-space: pre-wrap; overflow: auto; flex: 1; min-height: 0; }
+        .success { color: var(--success-color); }
+        .error { color: var(--error-color); }
+        .hint { font-size: 13px; color: #6c757d; margin-top: 3px; line-height: 1.6; }
+        .hint code { background: #eee; padding: 0 3px; border-radius: 3px; font-size: 12px; }
+        #volumePrefix { font-family: monospace; font-size: 15px; }
+        @media (max-width: 768px) {
+            html, body { height: auto; overflow: auto; }
+            body { padding: 8px; }
+            .container { grid-template-columns: 1fr; grid-template-rows: auto auto auto; flex: none; gap: 8px; }
+            header { flex-direction: column; gap: 4px; padding: 10px 12px; text-align: center; }
+            header h1 { font-size: 16px; white-space: normal; line-height: 1.3; }
+            header .sep { display: none; }
+            header p { font-size: 12px; }
+            .docker-logo { width: 28px; height: 28px; }
+            .panel { padding: 12px; overflow: visible; min-height: auto; }
+            .panel-header { flex-direction: column; align-items: flex-start; gap: 6px; }
+            .panel-header h2 { font-size: 15px; }
+            .copy-output-btn { align-self: flex-end; font-size: 12px; padding: 4px 10px; margin-top: -2px; }
+            .input-group.flex-grow { flex: none; }
+            textarea { flex: none; min-height: 160px; height: 160px; }
+            .output { flex: none; min-height: 250px; font-size: 13px; padding: 10px; }
+            .panel-section .output { min-height: 120px; }
+            .panel > h2 { font-size: 15px; }
+            label { font-size: 14px; }
+            input[type="text"], textarea { font-size: 14px; padding: 8px; }
+            #volumePrefix { font-size: 13px; }
+            .checkbox-item label { font-size: 13px; }
+            .checkbox-item input[type="checkbox"] { width: 15px; height: 15px; }
+            .hint { font-size: 11px; }
+            button { font-size: 15px; padding: 10px 16px; width: 100%; margin-top: 6px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <svg class="docker-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="#2496ed" d="M349.9 236.3h-66.1v-59.4h66.1v59.4zm0-204.3h-66.1v60.7h66.1V32zm78.2 144.8H362v59.4h66.1v-59.4zm-156.3-72.1h-66.1v60.1h66.1v-60.1zm78.1 0h-66.1v60.1h66.1v-60.1zm276.8 100c-14.4-9.7-47.6-13.2-73.1-8.4-3.3-24-16.7-44.9-41.1-63.7l-14-9.3-9.3 14c-18.4 27.8-23.4 73.6-3.7 103.8-8.7 4.7-25.8 11.1-48.4 10.7H2.4c-7.6 42.6-1 99.4 25.9 143.2 29.2 47.6 81.8 71.5 152.8 71.5 133.2 0 241.9-66.8 294.4-210.6 19.1.3 60.4.5 81.6-40.5.5-.9 1.7-3.2 5.5-11.2l2-4.4-13.7-9.2zM124.1 236.3H58v59.4h66.1v-59.4zm78.1 0h-66.1v59.4h66.1v-59.4zm78.1 0h-66.1v59.4h66.1v-59.4zm-78.1-72.1H136v60.1h66.1v-60.1z"/></svg>
+        <h1>Compose Tool</h1>
+        <span class="sep">|</span>
+        <p>Docker 配置转换工具</p>
+    </header>
+
+    <div class="panel">
+        <h2>输入 Docker Run 命令 / Docker Compose 配置</h2>
+        <div class="input-group flex-grow">
+            <label for="dockerCommand">Docker Run 命令 / Docker Compose 配置</label>
+            <textarea id="dockerCommand" placeholder="# 请输入 Docker Run 命令或 Docker Compose YAML 配置"></textarea>
+            <div class="hint">支持 Docker Run 命令、Compose YAML、带 mkdir/cat/vim 的完整脚本，智能提取核心内容</div>
+        </div>
+        <div class="input-group">
+            <label for="volumePrefix">自定义卷映射绝对路径</label>
+            <input type="text" id="volumePrefix">
+            <div class="hint">· 留空则不做任何替换<br>· <code>$(pwd)</code> 等shell 变量会被自动去掉<br>· <code>{container_name}</code> 会自动替换为实际容器名<br>· 系统级挂载如<code>/var/run/docker.sock</code> 等不会被替换<br>· 默认值由服务端<code>VOLUME_PREFIX</code> 环境变量决定</div>
+        </div>
+        <div class="input-group">
+            <label>常用选项</label>
+            <div class="checkbox-group">
+                <div class="checkbox-item"><input type="checkbox" id="restartPolicy" checked><label for="restartPolicy">自动重启 (--restart unless-stopped)</label></div>
+                <div class="checkbox-item"><input type="checkbox" id="privilegedMode"><label for="privilegedMode">特权模式 (--privileged)</label></div>
+            </div>
+            <div class="hint">仅在命令中<strong>未显式指定</strong>对应参数时生效</div>
+        </div>
+        <button id="convertBtn">转换配置</button>
+    </div>
+
+    <div class="panel">
+        <div class="panel-section">
+            <div class="panel-header">
+                <h2>🚀 一键部署命令</h2>
+                <button class="copy-output-btn" id="copyDeployBtn" title="复制部署命令">
+                    <svg id="copyDeployIcon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    <svg id="checkDeployIcon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span id="copyDeployLabel">复制</span>
+                </button>
+            </div>
+            <div class="output" id="deployOutput">粘贴到终端执行，自动完成目录创建、文件生成、容器启动</div>
+        </div>
+        <div class="panel-section">
+            <div class="panel-header">
+                <h2>📄 compose.yaml 内容</h2>
+                <button class="copy-output-btn" id="copyYamlBtn" title="复制 YAML 内容">
+                    <svg id="copyYamlIcon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    <svg id="checkYamlIcon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span id="copyYamlLabel">复制</span>
+                </button>
+            </div>
+            <div class="output" id="yamlOutput">纯 compose.yaml 配置内容，适合手动编辑或集成到其他工具</div>
+        </div>
+    </div>
+</div>
+<script>
+(function () {
+    init();
+
+    function init() {
+        var dockerCommandEl = document.getElementById('dockerCommand');
+        var volumePrefixEl = document.getElementById('volumePrefix');
+        var deployOutput = document.getElementById('deployOutput');
+        var yamlOutput = document.getElementById('yamlOutput');
+        var convertBtn = document.getElementById('convertBtn');
+        var cbRestart = document.getElementById('restartPolicy');
+        var cbPrivileged = document.getElementById('privilegedMode');
+
+        var copyDeployBtn = document.getElementById('copyDeployBtn');
+        var copyDeployLabel = document.getElementById('copyDeployLabel');
+        var copyDeployIcon = document.getElementById('copyDeployIcon');
+        var checkDeployIcon = document.getElementById('checkDeployIcon');
+
+        var copyYamlBtn = document.getElementById('copyYamlBtn');
+        var copyYamlLabel = document.getElementById('copyYamlLabel');
+        var copyYamlIcon = document.getElementById('copyYamlIcon');
+        var checkYamlIcon = document.getElementById('checkYamlIcon');
+
+        var serverDefault = (typeof window.VOLUME_PREFIX !== 'undefined' && window.VOLUME_PREFIX)
+            ? window.VOLUME_PREFIX : '/opt/docker/{container_name}';
+        volumePrefixEl.value = serverDefault;
+
+        function copyText(text, btn, labelEl, copyIconEl, checkIconEl) {
+            if (!text) return;
+            function onSuccess() {
+                btn.classList.add('copied'); copyIconEl.style.display = 'none'; checkIconEl.style.display = ''; labelEl.textContent = '已复制';setTimeout(function () { btn.classList.remove('copied'); copyIconEl.style.display = ''; checkIconEl.style.display = 'none'; labelEl.textContent = '复制'; }, 2000);
+            }
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(onSuccess).catch(function () { fallbackCopy(text, onSuccess); });
+            } else { fallbackCopy(text, onSuccess); }
+        }
+
+        function fallbackCopy(text, onSuccess) {
+            var ta = document.createElement('textarea');
+            ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.left = '-9999px'; ta.style.top = '-9999px';
+            document.body.appendChild(ta);
+            if (navigator.userAgent.match(/ipad|ipod|iphone/i)) {
+                var range = document.createRange(); range.selectNodeContents(ta);
+                var selection = window.getSelection(); selection.removeAllRanges(); selection.addRange(range); ta.setSelectionRange(0, 999999);
+            } else { ta.focus(); ta.select(); }
+            try { var ok = document.execCommand('copy'); if (ok) onSuccess(); else alert('复制失败，请手动选中内容复制'); }
+            catch (e) { alert('复制失败，请手动选中内容复制'); }
+            document.body.removeChild(ta);
+        }
+
+        copyDeployBtn.addEventListener('click', function () {
+            var text = deployOutput.textContent;
+            if (!text || text === '粘贴到终端执行，自动完成目录创建、文件生成、容器启动') return;
+            copyText(text, copyDeployBtn, copyDeployLabel, copyDeployIcon, checkDeployIcon);
+        });
+        copyYamlBtn.addEventListener('click', function () {
+            var text = yamlOutput.textContent;
+            if (!text || text === '纯 compose.yaml 配置内容，适合手动编辑或集成到其他工具') return;
+            copyText(text, copyYamlBtn, copyYamlLabel, copyYamlIcon, checkYamlIcon);
+        });
+        convertBtn.addEventListener('click', convertCommand);
+
+        function preprocessInput(raw) {
+            var heredocMatch = raw.match(/<<\s*['"]?EOF['"]?\n([\s\S]*?)\nEOF/i);
+            if (heredocMatch) return heredocMatch[1].trim();
+            // Compose YAML：原样保留，注释和缩进都是有效内容，不能走脚本清洗
+            if (/\bservices\s*:/.test(raw)) return raw;
+            if(/docker\s+run\b/.test(raw)) return raw;
+            var boilerplate = [/^\s*mkdir\b/, /^\s*cd\b/, /^\s*cat\b/, /^\s*tee\b/, /^\s*vim?\b/, /^\s*nano\b/, /^\s*echo\b/, /^\s*docker\s+compose\b/, /^\s*docker-compose\b/, /^\s*docker\s+pull\b/, /^\s*docker\s+stop\b/, /^\s*docker\s+rm\b/, /^\s*docker\s+start\b/, /^\s*docker\s+restart\b/, /^\s*sudo\b/, /^\s*#/, /^\s*EOF\s*$/, /^\s*\\\s*$/];
+            var lines = raw.split('\n');
+            var clean = lines.filter(function (line) {
+                var t = line.trim(); if (!t) return false;
+                for (var i = 0; i < boilerplate.length; i++) { if (boilerplate[i].test(t)) return false; }
+                return true;
+            });
+            return clean.join('\n').trim();
+        }
+
+        // 引号感知分词：保留原始引号，取值时统一用 unquote()
+        function tokenize(str) {
+            var tokens = [], current = '', inD = false, inS = false, hasToken = false;
+            for (var idx = 0; idx < str.length; idx++) {
+                var c = str[idx];
+                if (c === '"' && !inS) { inD = !inD; current += c; hasToken = true; }
+                else if (c === "'" && !inD) { inS = !inS; current += c; hasToken = true; }
+                else if (/\s/.test(c) && !inD && !inS) { if (hasToken) { tokens.push(current); current = ''; hasToken = false; } }
+                else { current += c; hasToken = true; }
+            }
+            if (hasToken) tokens.push(current);
+            return tokens;
+        }
+
+        function unquote(str) {
+            if (str === undefined || str === null) return '';
+            str = String(str).trim();
+            if (str.length >= 2) {
+                var q = str.charAt(0);
+                if ((q === '"' || q === "'") && str.charAt(str.length - 1) === q) return str.slice(1, -1);
+            }
+            return str;
+        }
+
+        // 按 shell 语义求值：去掉任何位置的引号，处理反斜杠转义（用于 -e FOO="bar" 这类写法）
+        function shellUnquote(str) {
+            if (str === undefined || str === null) return '';
+            str = String(str);
+            var out = '', inD = false, inS = false;
+            for (var k = 0; k < str.length; k++) {
+                var c = str.charAt(k);
+                if (c === '\\' && !inS && k + 1 < str.length) {
+                    var nx = str.charAt(k + 1);
+                    if (inD && nx !== '"' && nx !== '\\' && nx !== '$' && nx !== '`') { out += c; continue; }
+                    out += nx; k++; continue;
+                }
+                if (c === '"' && !inS) { inD = !inD; continue; }
+                if (c === "'" && !inD) { inS = !inS; continue; }
+                out += c;
+            }
+            return out.trim();
+        }
+
+        function yamlQuote(val) {
+            return '"' + String(val).replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"';
+        }
+
+        // 安全字符直接输出，其余加引号，保持与旧版输出一致的观感
+        function yamlScalar(val) {
+            return /^[A-Za-z0-9._\/-]+$/.test(String(val)) ? String(val) : yamlQuote(val);
+        }
+
+        function indentOf(line) { return line.match(/^(\s*)/)[1].length; }
+
+        function extractRunCommand(rawInput) {
+            var joined = rawInput.replace(/\\\s*\n/g, ' ');
+            var lines = joined.split('\n').map(function (l) { return l.trim(); }).filter(Boolean);
+            var runCommand = null, runStartIdx = -1, pullImage = null;
+            for (var idx = 0; idx < lines.length; idx++) {
+                var line = lines[idx];
+                if (/^(?:sudo\s+)?docker\s+run\b/.test(line)) { runCommand = line; runStartIdx = idx; }
+                else if (/^(?:sudo\s+)?docker\s+pull\b/.test(line)) {
+                    var parts = line.replace(/^sudo\s+/, '').split(/\s+/);
+                    var nonOpt = parts.slice(2).filter(function (p) { return !p.startsWith('-'); });
+                    if (nonOpt.length > 0) pullImage = nonOpt[nonOpt.length - 1];
+                }
+            }
+            if (runCommand !== null && runStartIdx >= 0) {
+                for (var j = runStartIdx + 1; j < lines.length; j++) {
+                    var nextLine = lines[j];
+                    if (nextLine.startsWith('docker ') || nextLine.startsWith('sudo ') || nextLine.startsWith('#')) break;
+                    runCommand += ' ' + nextLine;
+                }
+            }
+            return { runCommand: runCommand, pullImage: pullImage };
+        }
+
+        function cleanShellVars(path) {
+            path = path.replace(/\$\([^)]*\)/g, '');
+            path = path.replace(/\$\{[^}]*\}/g, '');
+            path = path.replace(/\$[A-Za-z_][A-Za-z0-9_]*/g, '');
+            path = path.replace(/`[^`]*`/g, '');
+            path = path.replace(/\/+/g, '/');
+            return path;
+        }
+
+        var SYSTEM_PATHS = ['/var/run/docker.sock', '/run/docker.sock', '/var/run/docker', '/run/docker', '/var/lib/docker', '/usr/bin/docker', '/usr/local/bin/docker', '/proc', '/sys', '/dev', '/boot', '/lib/modules', '/usr/src', '/etc/localtime', '/etc/timezone', '/usr/share/zoneinfo', '/etc/hosts', '/etc/hostname', '/etc/resolv.conf', '/etc/machine-id', '/etc/docker', '/etc/ssl', '/etc/pki', '/etc/ca-certificates', '/usr/share/ca-certificates', '/usr/local/share/ca-certificates', '/etc/passwd', '/etc/group', '/etc/shadow', '/etc/gshadow', '/etc/nsswitch.conf', '/etc/krb5.conf', '/etc/environment', '/tmp/.X11-unix', '/run/dbus', '/var/run/dbus'];
+
+        function isSystemPath(hostPath) {
+            for (var idx = 0; idx < SYSTEM_PATHS.length; idx++) {
+                if (hostPath === SYSTEM_PATHS[idx] || hostPath.startsWith(SYSTEM_PATHS[idx] + '/')) return true;
+            }
+            return false;
+        }
+
+        // 纯名称（不含 / 且不以 . ~ / 开头）= Docker 命名卷，不是宿主路径
+        function isPlainName(name) { return /^[A-Za-z0-9][A-Za-z0-9_.-]*$/.test(name); }
+
+        function normalizeHost(hostPart) {
+            if (hostPart === '.' || hostPart === '~' || hostPart === '/' || hostPart === '') return '';
+            if (hostPart.indexOf('./') === 0) return hostPart.slice(1);
+            if (hostPart.indexOf('~/') === 0) return hostPart.slice(1);
+            if (hostPart.indexOf('../') === 0) return '/' + hostPart.replace(/^(\.\.\/)+/, '');
+            if (hostPart.charAt(0) === '/') {
+                var segs = hostPart.replace(/\/+$/, '').split('/').filter(Boolean);
+                if (!segs.length) return '';
+                return '/' + segs[segs.length - 1];
+            }
+            return '/' + hostPart;
+        }
+
+        // 把 $PWD / $(pwd) / ${PWD} / $HOME / ~ 前缀视为当前目录，避免后续被当成绝对路径压扁
+        function stripCwdPrefix(p) {
+            return p.replace(/^(?:\$\(\s*pwd\s*\)|\$\{\s*PWD\s*\}|\$PWD|\$\{\s*HOME\s*\}|\$HOME|~)(?=\/|$)/, '.');
+        }
+
+        // 只处理"真实宿主路径"：系统路径、命名卷、空值原样返回
+        function resolveHostPath(rawHost, prefix) {
+            var host = stripCwdPrefix(String(rawHost).trim());
+            host = cleanShellVars(host).trim();
+            if (!host) return '';
+            if (host === '.' || host === './') return prefix ? prefix.replace(/\/+$/, '') : '.';
+            if (isSystemPath(host)) return host;
+            if (isPlainName(host)) return host;
+            if (!prefix) return host;
+            var norm = normalizeHost(host);
+            if (!norm) return host;
+            return (prefix.replace(/\/+$/, '') + norm).replace(/\/{2,}/g, '/');
+        }
+
+        function resolveVolume(volRaw, prefix) {
+            var vol = String(volRaw).trim();
+            if (!vol) return vol;
+            var ci = vol.indexOf(':');
+            if (ci < 0) return cleanShellVars(vol);       // 只有容器内路径（匿名卷）：原样保留
+            var host = vol.slice(0, ci);
+            var rest = vol.slice(ci);
+            if (!host) return vol;                        // 形如 ":data" 的非法写法，不动
+            var resolved = resolveHostPath(host, prefix);
+            if (!resolved) return prefix ? prefix.replace(/\/+$/, '') + rest : cleanShellVars(vol);
+            return resolved + rest;
+        }
+
+        // 解析 volumes 列表项：区分短语法（host:container）、长语法（type/source 映射）
+        function parseVolumeItem(body) {
+            var q = '', value = body, tail = '';
+            if (body.charAt(0) === '"' || body.charAt(0) === "'") {
+                q = body.charAt(0);
+                var end = body.indexOf(q, 1);
+                if (end < 0) return { long: false, value: '' };
+                value = body.slice(1, end);
+                tail = body.slice(end + 1);
+            } else {
+                var hash = body.search(/\s#/);
+                if (hash >= 0) { tail = body.slice(hash); value = body.slice(0, hash); }
+                value = value.trim();
+                // "type: bind" / "source: ./data" 之类是 YAML 映射，不是短语法路径
+                if (/^[A-Za-z_][\w.-]*\s*:\s+\S/.test(value)) return { long: true };
+            }
+            return { long: false, value: value.trim(), quote: q, tail: tail };
+        }
+
+        function processComposeYaml(yamlStr) {
+            var rp = volumePrefixEl.value.trim();
+            var lines = yamlStr.split('\n');
+            var inserts = {};
+            function addInsert(idx, arr) {
+                if (!arr.length) return;
+                inserts[idx] = (inserts[idx] || []).concat(arr);
+            }
+
+            // ---------- 1. 定位 services: 块，切出每个 service 的边界 ----------
+            var servicesIdx = -1, servicesIndent = 0;
+            for (var i = 0; i < lines.length; i++) {
+                if (/^\s*services:\s*(#.*)?$/.test(lines[i])) {
+                    servicesIdx = i; servicesIndent = indentOf(lines[i]); break;
+                }
+            }
+            var services = [];
+            if (servicesIdx >= 0) {
+                var blockEnd = lines.length;
+                for (var i = servicesIdx + 1; i < lines.length; i++) {
+                    if (!lines[i].trim() || /^\s*#/.test(lines[i])) continue;
+                    if (indentOf(lines[i]) <= servicesIndent) { blockEnd = i; break; }
+                }
+                var keyIndent = -1;
+                for (var i = servicesIdx + 1; i < blockEnd; i++) {
+                    var line = lines[i];
+                    if (!line.trim() || /^\s*#/.test(line)) continue;
+                    var ind = indentOf(line);
+                    if (keyIndent === -1) keyIndent = ind;
+                    if (ind !== keyIndent) continue;
+                    var km = line.match(/^\s*([^\s:#][^:#]*?)\s*:\s*(#.*)?$/);
+                    if (km) services.push({
+                        name: unquote(km[1]), start: i, end: blockEnd, indent: ind,
+                        childIndent: -1, containerName: '', hasRestart: false, hasPrivileged: false
+                    });
+                }
+                for (var k = 0; k < services.length; k++) {
+                    if (k + 1 < services.length) services[k].end = services[k + 1].start;
+                }
+            }
+
+            // ---------- 2. 每个 service 先取自身元信息 ----------
+            for (var s = 0; s < services.length; s++) {
+                var svc = services[s];
+                for (var i = svc.start + 1; i < svc.end; i++) {
+                    var line = lines[i];
+                    if (!line.trim() || /^\s*#/.test(line)) continue;
+                    if (svc.childIndent === -1) svc.childIndent = indentOf(line);
+                    var cm = line.match(/^\s*container_name:\s*(.+?)\s*(#.*)?$/);
+                    if (cm) svc.containerName = unquote(cm[1]);
+                    if (/^\s*restart:\s*\S/.test(line)) svc.hasRestart = true;
+                    if (/^\s*privileged:\s*\S/.test(line)) svc.hasPrivileged = true;
+                }
+            }
+
+            // ---------- 3. 按 service 自己的目录前缀改写卷 ----------
+            var referencedNamed = [];
+            for (var s = 0; s < services.length; s++) {
+                var svc = services[s];
+                var prefix = rp ? rp.replace(/\{container_name\}/g, svc.containerName || svc.name) : '';
+                var volIndent = -1, longIndent = -1;
+                for (var i = svc.start + 1; i < svc.end; i++) {
+                    var line = lines[i];
+                    if (!line.trim()) continue;
+                    var ind = indentOf(line);
+                    if (volIndent >= 0 && ind <= volIndent) { volIndent = -1; longIndent = -1; }
+                    if (/^\s*volumes:\s*(#.*)?$/.test(line)) { volIndent = ind; longIndent = -1; continue; }
+                    if (volIndent < 0) continue;
+
+                    var itemMatch = line.match(/^(\s*)-(\s+|$)/);
+                    if (itemMatch) {
+                        var parsed = parseVolumeItem(line.slice(itemMatch[0].length));
+                        if (parsed.long) { longIndent = ind; continue; }
+                        longIndent = -1;
+                        if (!parsed.value) continue;
+                        var host0 = parsed.value.split(':')[0];
+                        if (host0 && isPlainName(host0)) referencedNamed.push(host0);
+                        var resolved = resolveVolume(parsed.value, prefix);
+                        lines[i] = itemMatch[1] + '- ' + parsed.quote + resolved + parsed.quote + parsed.tail;
+                        continue;
+                    }
+                    if (longIndent >= 0 && ind > longIndent) {
+                        var sm = line.match(/^(\s*)(source|device):\s*(.+?)\s*(#.*)?$/);
+                        if (sm) {
+                            var vq = (sm[3].charAt(0) === '"' || sm[3].charAt(0) === "'") ? sm[3].charAt(0) : '';
+                            var rv = resolveHostPath(unquote(sm[3]), prefix);
+                            if (isPlainName(rv)) referencedNamed.push(rv);
+                            lines[i] = sm[1] + sm[2] + ': ' + (vq ? vq + rv + vq : rv) + (sm[4] ? ' ' + sm[4] : '');
+                        }
+                    }
+                }
+            }
+
+            // ---------- 4. restart / privileged 补到各自 service 块末尾 ----------
+            for (var s = 0; s < services.length; s++) {
+                var svc = services[s];
+                var childIndent = svc.childIndent === -1 ? svc.indent + 2 : svc.childIndent;
+                var pad = new Array(childIndent + 1).join(' ');
+                var add = [];
+                if (!svc.hasRestart && cbRestart.checked) add.push(pad + 'restart: unless-stopped');
+                if (!svc.hasPrivileged && cbPrivileged.checked) add.push(pad + 'privileged: true');
+                if (!add.length) continue;
+                var insertAt = svc.end;
+                while (insertAt > svc.start + 1 && (!lines[insertAt - 1].trim() || /^\s*#/.test(lines[insertAt - 1]))) insertAt--;
+                addInsert(insertAt, add);
+            }
+
+            // ---------- 5. 引用了命名卷但未声明时补声明，避免 compose 报 undefined volume ----------
+            var declared = {}, topVolIdx = -1, topVolIndent = 0, declIndent = -1;
+            for (var i = 0; i < lines.length; i++) {
+                if (indentOf(lines[i]) <= servicesIndent && /^\s*volumes:\s*(#.*)?$/.test(lines[i])) {
+                    topVolIdx = i; topVolIndent = indentOf(lines[i]); break;
+                }
+            }
+            if (topVolIdx >= 0) {
+                for (var i = topVolIdx + 1; i < lines.length; i++) {
+                    if (!lines[i].trim() || /^\s*#/.test(lines[i])) continue;
+                    var ind = indentOf(lines[i]);
+                    if (ind <= topVolIndent) break;
+                    if (declIndent === -1) declIndent = ind;
+                    if (ind !== declIndent) continue;
+                    var dm = lines[i].match(/^\s*([^\s:#][^:#]*?)\s*:/);
+                    if (dm) declared[unquote(dm[1])] = true;
+                }
+            }
+            var missing = [];
+            for (var n = 0; n < referencedNamed.length; n++) {
+                if (!declared[referencedNamed[n]] && missing.indexOf(referencedNamed[n]) < 0) missing.push(referencedNamed[n]);
+            }
+            if (missing.length) {
+                var vpad = new Array(topVolIndent + 3).join(' ');
+                var declLines = missing.map(function (vn) { return vpad + vn + ':'; });
+                if (topVolIdx >= 0) {
+                    var at = lines.length;
+                    while (at > topVolIdx + 1 && (!lines[at - 1].trim() || /^\s*#/.test(lines[at - 1]))) at--;
+                    addInsert(at, declLines);
+                } else {
+                    addInsert(lines.length, [''].concat(['volumes:'].concat(declLines)));
+                }
+            }
+
+            // ---------- 6. 合并插入内容 ----------
+            var result = [];
+            for (var i = 0; i <= lines.length; i++) {
+                if (inserts[i]) result = result.concat(inserts[i]);
+                if (i < lines.length) result.push(lines[i]);
+            }
+            var yaml = result.join('\n');
+
+            var primaryName = services.length
+                ? (services[0].containerName || services[0].name)
+                : 'my-service';
+            var deployDir = rp ? rp.replace(/\{container_name\}/g, primaryName) : '/opt/docker/' + primaryName;
+            var deployCommand =
+"mkdir -p " + deployDir + " && cd " + deployDir + " && \\\n" +
+"cat > compose.yaml << 'EOF'\n" + yaml + "\nEOF\n" +
+"docker compose up -d";
+            return { deploy: deployCommand, yaml: yaml };
+        }
+
+        function convertCommand() {
+            var raw = dockerCommandEl.value.trim();
+            if (!raw) { setError('请输入 Docker Run 命令或 Docker Compose 配置'); return; }
+            try {
+                var processInput = preprocessInput(raw);
+                var result;
+                if (processInput.includes('services:') || processInput.includes('version:')) {
+                    result = processComposeYaml(processInput);
+                } else {
+                    var extracted = extractRunCommand(processInput);
+                    if (!extracted.runCommand) { setError('未找到 Docker Run 命令，请确保输入中包含以 "docker run" 开头的命令'); return; }
+                    result = parseDockerCommand(extracted.runCommand, extracted.pullImage);
+                }
+                deployOutput.classList.remove('error'); deployOutput.classList.add('success'); deployOutput.textContent = result.deploy;
+                yamlOutput.classList.remove('error'); yamlOutput.classList.add('success'); yamlOutput.textContent = result.yaml;
+            } catch (err) { setError(err.message); }
+        }
+
+        function setError(msg) {
+            deployOutput.classList.remove('success'); deployOutput.classList.add('error'); deployOutput.textContent = '错误：' + msg;
+            yamlOutput.classList.remove('success'); yamlOutput.classList.add('error'); yamlOutput.textContent = '';
+        }
+
+        function parseDockerCommand(command, pullImage) {
+            var args = command.replace(/^\s*(?:sudo\s+)+/, '').replace(/^docker\s+run\s*/, '');
+            var tokens = tokenize(args);
+            var BUILTIN = { host: 1, bridge: 1, none: 1 };
+            var BOOLS = { '--rm':1, '--init':1, '--tty':1, '-t':1, '-i':1, '-it':1, '--no-healthcheck':1, '--oom-kill-disable':1, '--read-only':1, '--sig-proxy':1 };
+            // 组合短选项：-dit / -itd / -ti 之类（等价于 -d -i -t）
+            var SHORT_BOOLS = /^-[dit]+$/;
+            var svc = { image: '', container_name: '', hostname: '', working_dir: '', ports: [], volumes: [], environment: [], networks: [], labels: [], logging: { driver: '', options: {} }, restart: '', privileged: false, command: '' };
+            // 取值：--opt=value 或 --opt value，按 shell 语义去掉引号
+            function valOf(idx, inline) { return shellUnquote(inline !== null ? inline : tokens[idx + 1]); }
+            var restCLI = false, privCLI = false;
+            var topVol = {}, topNet = {};
+            var i = 0;
+            while (i < tokens.length) {
+                var t = tokens[i];
+                if (t === '\\') { i++; continue; }
+                var o = t, ve = null;
+                if (t.startsWith('-') && t.includes('=')) { var eq = t.indexOf('='); o = t.slice(0, eq); ve = t.slice(eq + 1); }
+                if (o === '-d' || o === '--detach') { i++; continue; }
+                if (BOOLS[o] || SHORT_BOOLS.test(o)) { i++; continue; }
+                if (o === '--name') { svc.container_name = valOf(i, ve); i += ve !== null ? 1 : 2; continue; }
+                if (o === '--hostname' || o === '-h') { svc.hostname = valOf(i, ve); i += ve !== null ? 1 : 2; continue; }
+                if (o === '-p' || o === '--publish') { svc.ports.push(valOf(i, ve)); i += ve !== null ? 1 : 2; continue; }
+                if (o === '--workdir' || o === '-w') { svc.working_dir = valOf(i, ve); i += ve !== null ? 1 : 2; continue; }
+                if (o === '-v' || o === '--volume') { svc.volumes.push(valOf(i, ve)); i += ve !== null ? 1 : 2; continue; }
+                if (o === '-e' || o === '--env') { svc.environment.push(valOf(i, ve)); i += ve !== null ? 1 : 2; continue; }
+                if (o === '--restart') { svc.restart = valOf(i, ve); restCLI = true; i += ve !== null ? 1 : 2; continue; }
+                if (o === '--privileged') { svc.privileged = true; privCLI = true; i++; continue; }
+                if (o === '--label' || o === '-l') { svc.labels.push(valOf(i, ve)); i += ve !== null ? 1 : 2; continue; }
+                if (o === '--log-driver') { svc.logging.driver = valOf(i, ve); i += ve !== null ? 1 : 2; continue; }
+                if (o === '--log-opt') { var r = valOf(i, ve); var ep = r.indexOf('='); var k = ep >= 0 ? r.slice(0, ep) : r; var v = ep >= 0 ? r.slice(ep + 1) : ''; if (k) svc.logging.options[k] = v; i += ve !== null ? 1 : 2; continue; }
+                if (o === '--network' || o === '--net') { var n = valOf(i, ve); svc.networks.push(n); if (!BUILTIN[n] && !topNet[n]) topNet[n] = { external: true }; i += ve !== null ? 1 : 2; continue; }
+                if (!t.startsWith('-')) {
+                    if (!svc.image) svc.image = shellUnquote(t);
+                    else { var cmd = tokens.slice(i).join(' '); if (cmd) svc.command = yamlQuote(cmd); break; }
+                    i++; continue;
+                }
+                if (o.startsWith('-')) { i += ve !== null ? 1 : 2; continue; }
+                i++;
+            }
+            if (!svc.image && pullImage) svc.image = pullImage;
+            var finalName;
+            if (svc.container_name) finalName = svc.container_name;
+            else if (svc.image) finalName = svc.image.split('/').pop().split(':')[0] || 'my-service';
+            else finalName = 'my-service';
+            finalName = finalName.replace(/[^a-zA-Z0-9_-]/g, '-');
+            var rp = volumePrefixEl.value.trim();
+            var vp = rp ? rp.replace(/\{container_name\}/g, finalName) : '';
+            if (!restCLI) svc.restart = cbRestart.checked ? 'unless-stopped' : '';
+            if (!privCLI) svc.privileged = cbPrivileged.checked;
+            var rv = svc.volumes.map(function (vol) {
+                var cleaned = cleanShellVars(vol);
+                var hp = cleaned.indexOf(':') >= 0 ? cleaned.split(':')[0] : '';
+                if (hp && isPlainName(hp) && !topVol[hp]) topVol[hp] = {};   // 命名卷需在顶层声明
+                return resolveVolume(vol, vp);
+            });
+            var y = "services:\n  " + finalName + ":\n    image: " + svc.image + "\n";
+            if (svc.container_name) y += "    container_name: " + yamlScalar(svc.container_name) + "\n";
+            if (svc.hostname) y += "    hostname: " + yamlScalar(svc.hostname) + "\n";
+            if (svc.working_dir) y += "    working_dir: " + yamlScalar(svc.working_dir) + "\n";
+            if (svc.ports.length) { y += "    ports:\n"; svc.ports.forEach(function (p) { y += '      - ' + yamlQuote(p) + '\n'; }); }
+            if (rv.length) { y += "    volumes:\n"; rv.forEach(function (v) { y += '      - ' + yamlQuote(v) + '\n'; }); }
+            if (svc.environment.length) { y += "    environment:\n"; svc.environment.forEach(function (e) { y += '      - ' + yamlQuote(e) + '\n'; }); }
+            if (svc.labels.length) { y += "    labels:\n"; svc.labels.forEach(function (l) { y += '      - ' + yamlQuote(l) + '\n'; }); }
+            var hd = !!svc.logging.driver, ho = Object.keys(svc.logging.options).length > 0;
+            if (hd || ho) { y += "    logging:\n"; if (hd) y += "      driver: " + svc.logging.driver + "\n"; if (ho) { y += "      options:\n"; for (var lk in svc.logging.options) y += '        ' + lk + ': ' + yamlQuote(svc.logging.options[lk]) + '\n'; } }
+            if (svc.networks.length) { y += "    networks:\n"; svc.networks.forEach(function (nn) { y += "      - " + nn + "\n"; }); }
+            if (svc.restart) y += "    restart: " + svc.restart + "\n";
+            if (svc.privileged) y += "    privileged: true\n";
+            if (svc.command) y += "    command: " + svc.command + "\n";
+            if (Object.keys(topVol).length) { y += "\nvolumes:\n"; for (var vn in topVol) y += "  " + vn + ":\n"; }
+            if (Object.keys(topNet).length) { y += "\nnetworks:\n"; for (var nn in topNet) { y += "  " + nn + ":\n"; if (topNet[nn].external) y += "    external: true\n"; } }
+            var deployDir = vp ? vp : '/opt/docker/' + finalName;
+            var deployCommand =
+"mkdir -p " + deployDir + " && cd " + deployDir + " && \\\n" +
+"cat > compose.yaml << 'EOF'\n" + y + "EOF\n" +
+"docker compose up -d";
+            return { deploy: deployCommand, yaml: y };
+        }
+    }
+})();
+</script>
+</body>
+</html>
